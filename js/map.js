@@ -8,7 +8,7 @@ var generatorOptions = {
   TYPES: ['flat', 'house', 'bungalo'],
   CHECKINS: ['12:00', '13:00', '14:00'],
   CHECKOUTS: ['12:00', '13:00', '14:00'],
-  TYPE_DESCS : ['Квартира', 'Бунгало', 'Дом']
+  TYPE_DESCS: ['Квартира', 'Бунгало', 'Дом']
 };
 
 function generateUniqueURL(minAvatarID, maxAvatarID, generatedOffers) {
@@ -37,24 +37,24 @@ function renderType(generatedOffers) {
 
 var randomAddress = getRandomFromRange(300, 900) + ',' + getRandomFromRange(100, 500);
 
-function generaterandomOffers(generatorOptions) {
+function generaterandomOffers(options) {
   var randomOffers = [];
-  for (var i = 0; i < generatorOptions.COUNTS; i++) {
+  for (var i = 0; i < options.COUNTS; i++) {
     randomOffers[i] = {
       'author': {
         'avatar': generateUniqueURL(1, 8, randomOffers)
       },
 
       'offer': {
-        'title': getRandomFrom(generatorOptions.TITLES),
+        'title': getRandomFrom(options.TITLES),
         'address': randomAddress,
         'price': getRandomFromRange(1000, 1000000),
-        'type': getRandomFrom(generatorOptions.TYPES),
+        'type': getRandomFrom(options.TYPES),
         'rooms': getRandomFromRange(1, 5),
         'guests': getRandomFromRange(1, 5),
-        'checkin': getRandomFrom(generatorOptions.CHECKINS),
-        'checkout': getRandomFrom(generatorOptions.CHECKOUTS),
-        'features': getRandomFeatures(),
+        'checkin': getRandomFrom(options.CHECKINS),
+        'checkout': getRandomFrom(options.CHECKOUTS),
+        'features': getRandomFeatures(options),
         'description': '',
         'photos': []
       },
@@ -81,10 +81,10 @@ function getRandomFrom(possibleValues) {
   return possibleValues[randomIndex];
 }
 
-function getRandomFeatures() {
+function getRandomFeatures(options) {
   var result = [];
-  var dirtyFeatures = generatorOptions.FEATURES.slice();
-  var randomLength = Math.floor(Math.random() * generatorOptions.FEATURES.length);
+  var dirtyFeatures = options.FEATURES.slice();
+  var randomLength = Math.floor(Math.random() * options.FEATURES.length);
   for (var i = 0; i < randomLength; i++) {
     var randomIdx = Math.floor(Math.random() * dirtyFeatures.length);
     result.push(dirtyFeatures[randomIdx]);
