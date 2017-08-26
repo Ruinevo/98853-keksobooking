@@ -103,12 +103,13 @@ function getRandomFeatures(options) {
 }
 
 function renderPin(generatedOffer, idx) {
-  var adsElement = nearbyAdsItem.cloneNode(true); // копия дива
-  var adsImg = nearbyAdsItemImg.cloneNode(true); // копия img
+  var adsElement = document.createElement('div');
+  var adsImg = document.createElement('img');
   adsElement.appendChild(adsImg);
   adsElement.classList.add('pin');
   adsElement.style.left = generatedOffer.location.x + 'px';
   adsElement.style.top = generatedOffer.location.y + 'px';
+  adsElement.tabIndex = 0;
   adsImg.src = generatedOffer.author.avatar;
   adsImg.classList.add('rounded');
   adsImg.style.width = PIN_WIDTH + 'px';
@@ -118,8 +119,6 @@ function renderPin(generatedOffer, idx) {
 }
 
 var nearbyAdsList = document.querySelector('.tokyo__pin-map');
-var nearbyAdsItem = document.createElement('div');
-var nearbyAdsItemImg = document.createElement('img');
 var fragment = document.createDocumentFragment();
 var offerDialog = document.querySelector('.dialog');
 var dialogTemplateCopy = document.querySelector('#lodge-template').content;
@@ -149,11 +148,11 @@ function renderOffer(generatedOffer) {
 
 // Задание 11//
 
-var pinActives = nearbyAdsList.querySelectorAll('.pin');
+var pins = nearbyAdsList.querySelectorAll('.pin');
 var closeDialogBtn = offerDialog.querySelector('.dialog__close');
 
 function deactivateLastPin() {
-  pinActives.forEach(function (elem) {
+  pins.forEach(function (elem) {
     if (elem.classList.contains('pin--active')) {
       elem.classList.remove('pin--active');
     }
@@ -170,9 +169,7 @@ var openDialog = function (elem) { // функция открытия popup
   offerDialog.classList.remove('hidden');
   deactivateLastPin();
   elem.classList.add('pin--active');
-  if (!elem.classList.contains('pin__main')) {
-    renderOffer(randomOffers[elem.dataset.index]);
-  }
+  renderOffer(randomOffers[elem.dataset.index]);
   document.addEventListener('keydown', onDialogEscPress);
 };
 
@@ -183,15 +180,17 @@ var closeDialog = function () { // функция закрытия popup
 };
 
 
-pinActives.forEach(function (elem) { // вызываем функцию на каждом элементе массива pinActives при нажатии
+pins.forEach(function (elem) { // вызываем функцию на каждом элементе массива pins при нажатии
+  if (!elem.classList.contains('pin__main')) {
   elem.addEventListener('click', function () {
     openDialog(elem);
   });
+ }
 });
 
 closeDialogBtn.addEventListener('click', closeDialog);
 
-pinActives.forEach(function (elem) { // открываем popup при помощи enter
+pins.forEach(function (elem) { // открываем popup при помощи enter
   elem.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
       openDialog(elem);
