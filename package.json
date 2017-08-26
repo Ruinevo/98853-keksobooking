@@ -13,8 +13,8 @@
   },
   "homepage": "https://github.com/htmlacademy-javascript/98853-keksobooking",
   "devDependencies": {
-    "eslint": "4.2.0",
-    "eslint-config-htmlacademy": "0.3.x"
+    "eslint": "^4.5.0",
+    "eslint-config-htmlacademy": "^0.3.0"
   },
   "license": "MIT",
   "dependencies": {},
