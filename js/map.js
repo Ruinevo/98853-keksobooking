@@ -1,4 +1,8 @@
 'use strict';
+var ESC_KEYCODE = 27;
+var ENTER_KEYCODE = 13;
+var PIN_WIDTH = 40;
+var PIN_HEIGHT = 40;
 var generatorOptions = {
   FEATURES: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
   TITLES: ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'],
@@ -99,16 +103,23 @@ function getRandomFeatures(options) {
 }
 
 function renderPin(generatedOffer, idx) {
-  var adsElement = nearbyAdsItem.cloneNode(true);
+  var adsElement = nearbyAdsItem.cloneNode(true); // копия дива
+  var adsImg = nearbyAdsItemImg.cloneNode(true); // копия img
+  adsElement.appendChild(adsImg);
+  adsElement.classList.add('pin');
   adsElement.style.left = generatedOffer.location.x + 'px';
   adsElement.style.top = generatedOffer.location.y + 'px';
-  adsElement.querySelector('img').src = generatedOffer.author.avatar;
+  adsImg.src = generatedOffer.author.avatar;
+  adsImg.classList.add('rounded');
+  adsImg.style.width = PIN_WIDTH + 'px';
+  adsImg.style.height = PIN_HEIGHT + 'px';
   adsElement.dataset.index = idx;
   return adsElement;
 }
 
 var nearbyAdsList = document.querySelector('.tokyo__pin-map');
-var nearbyAdsItem = document.querySelector('.pin');
+var nearbyAdsItem = document.createElement('div');
+var nearbyAdsItemImg = document.createElement('img');
 var fragment = document.createDocumentFragment();
 var offerDialog = document.querySelector('.dialog');
 var dialogTemplateCopy = document.querySelector('#lodge-template').content;
@@ -136,65 +147,61 @@ function renderOffer(generatedOffer) {
 
 }
 
-
 // Задание 11//
 
-var pinActive = document.querySelectorAll('.pin');
-var dialogClose = offerDialog.querySelector('.dialog__close');
+var pinActives = nearbyAdsList.querySelectorAll('.pin');
+var closeDialogBtn = offerDialog.querySelector('.dialog__close');
 
-
-function removeClassPinActive() {
-  pinActive.forEach(function (elem) {
+function deactivateLastPin() {
+  pinActives.forEach(function (elem) {
     if (elem.classList.contains('pin--active')) {
       elem.classList.remove('pin--active');
     }
   });
 }
 
-var onPopupEscPress = function (evt) {
-  if (evt.keyCode === 27) {
-    closePopup();
+var onDialogEscPress = function (evt) {
+  if (evt.keyCode === ESC_KEYCODE) {
+    closeDialog();
   }
 };
 
-var openPopup = function (elem) { // функция открытия popup
+var openDialog = function (elem) { // функция открытия popup
   offerDialog.classList.remove('hidden');
-  removeClassPinActive();
+  deactivateLastPin();
   elem.classList.add('pin--active');
-  renderOffer(randomOffers[elem.dataset.index]);
-  document.addEventListener('keydown', onPopupEscPress);
+  if (!elem.classList.contains('pin__main')) {
+    renderOffer(randomOffers[elem.dataset.index]);
+  }
+  document.addEventListener('keydown', onDialogEscPress);
 };
 
-var closePopup = function () { // функция закрытия popup
-  removeClassPinActive();
+var closeDialog = function () { // функция закрытия popup
+  deactivateLastPin();
   offerDialog.classList.add('hidden');
-  document.removeEventListener('keydown', onPopupEscPress);
+  document.removeEventListener('keydown', onDialogEscPress);
 };
 
 
-pinActive.forEach(function (elem) { // вызываем функцию на каждом элементе массива pinActive при нажатии
+pinActives.forEach(function (elem) { // вызываем функцию на каждом элементе массива pinActives при нажатии
   elem.addEventListener('click', function () {
-    openPopup(elem);
+    openDialog(elem);
   });
 });
 
+closeDialogBtn.addEventListener('click', closeDialog);
 
-dialogClose.addEventListener('click', function () { // закрываем popup при нажатии на крестик
-  closePopup();
-});
-
-
-pinActive.forEach(function (elem) { // открываем popup при помощи enter
+pinActives.forEach(function (elem) { // открываем popup при помощи enter
   elem.addEventListener('keydown', function (evt) {
-    if (evt.keyCode === 13) {
-      openPopup(elem);
+    if (evt.keyCode === ENTER_KEYCODE) {
+      openDialog(elem);
     }
   });
 });
 
 
-dialogClose.addEventListener('keydown', function (evt) { // закрываем popup при помощи enter
-  if (evt.keyCode === 13) {
-    closePopup();
+closeDialogBtn.addEventListener('keydown', function (evt) { // закрываем popup при помощи enter
+  if (evt.keyCode === ENTER_KEYCODE) {
+    closeDialog();
   }
 });
