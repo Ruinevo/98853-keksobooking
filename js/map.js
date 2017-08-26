@@ -182,10 +182,10 @@ var closeDialog = function () { // функция закрытия popup
 
 pins.forEach(function (elem) { // вызываем функцию на каждом элементе массива pins при нажатии
   if (!elem.classList.contains('pin__main')) {
-  elem.addEventListener('click', function () {
-    openDialog(elem);
-  });
- }
+    elem.addEventListener('click', function () {
+      openDialog(elem);
+    });
+  }
 });
 
 closeDialogBtn.addEventListener('click', closeDialog);
