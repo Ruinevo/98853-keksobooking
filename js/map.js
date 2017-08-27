@@ -107,8 +107,8 @@ function renderPin(generatedOffer, idx) {
   var adsImg = document.createElement('img');
   adsElement.appendChild(adsImg);
   adsElement.classList.add('pin');
-  adsElement.style.left = generatedOffer.location.x + 'px';
-  adsElement.style.top = generatedOffer.location.y + 'px';
+  adsElement.style.left = generatedOffer.location.x + 20 + 'px';
+  adsElement.style.top = generatedOffer.location.y + 60 + 'px';
   adsElement.tabIndex = 0;
   adsImg.src = generatedOffer.author.avatar;
   adsImg.classList.add('rounded');
@@ -204,3 +204,91 @@ closeDialogBtn.addEventListener('keydown', function (evt) { // закрывае�
     closeDialog();
   }
 });
+
+// Задание 12
+var form = document.querySelector('.notice__form');
+var title = form.querySelector('.form__title');
+var timeIn = form.querySelector('.form__timein');
+var timeOut = form.querySelector('.form__timeout');
+var roomNumbers = form.querySelector('.form__room_number');
+var address = form.querySelector('.form__address');
+var type = document.querySelector('.form__type');
+var price = document.querySelector('.form__price');
+var capacity = form.querySelectorAll('.form__capacity option');
+
+function validationAddress(evt) {
+  if (address.value === '') {
+    address.style.border = '1px solid rgb(255, 0, 0)';
+    evt.preventDefault();
+  }
+}
+
+function validationTitle(evt) {
+  if (title.value.length < 30 || title.value.length > 100) {
+    title.style.border = '1px solid rgb(255, 0, 0)';
+    evt.preventDefault();
+  }
+}
+
+form.addEventListener('submit', validationTitle);
+form.addEventListener('submit', validationAddress);
+
+timeIn.addEventListener('change', function () {
+  timeOut.selectedIndex = timeIn.selectedIndex;
+});
+
+function connectTypeAndPrice() {
+  switch (type.selectedIndex) {
+    case 0:
+      price.value = '1000';
+      break;
+    case 1:
+      price.value = '0';
+      break;
+    case 2:
+      price.value = '5000';
+      break;
+    case 3:
+      price.value = '10000';
+      break;
+  }
+}
+
+type.addEventListener('change', connectTypeAndPrice);
+
+function deactivateSelect() {
+  capacity.forEach(function (elem) {
+    if (elem.classList.contains('hidden')) {
+      elem.classList.remove('hidden');
+    }
+  });
+}
+
+function connectRoomAndCapacity() {
+
+  switch (roomNumbers.selectedIndex) {
+    case 0:
+      deactivateSelect();
+      capacity[0].classList.add('hidden');
+      capacity[1].classList.add('hidden');
+      capacity[3].classList.add('hidden');
+      break;
+    case 1:
+      deactivateSelect();
+      capacity[0].classList.add('hidden');
+      capacity[3].classList.add('hidden');
+      break;
+    case 2:
+      deactivateSelect();
+      capacity[3].classList.add('hidden');
+      break;
+    case 3:
+      deactivateSelect();
+      capacity[0].classList.add('hidden');
+      capacity[1].classList.add('hidden');
+      capacity[2].classList.add('hidden');
+      break;
+  }
+}
+
+roomNumbers.addEventListener('click', connectRoomAndCapacity);
