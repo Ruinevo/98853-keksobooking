@@ -68,11 +68,11 @@
       </form>
     </div>
     <div class="tokyo__pin-map">
-      <div class="pin  pin__main"><img src="img/main-pin-image.png" alt="Main Pin" class="rounded" width="40" height="44"></div>
+      <div class="pin  pin__main"><img src="img/main-pin-image.png" alt="Main Pin" class="rounded" width="40" height="44" tabindex="0"></div>
     </div>
     <div id="offer-dialog" class="dialog">
       <div class="dialog__title"><img src="img/avatars/user01.png" alt="Avatar" width="70" height="70">
-        <a href="#" class="dialog__close"><img src="img/close.svg" alt="close" width="22" height="22"></a>
+        <a href="#" class="dialog__close"><img src="img/close.svg" alt="close" width="22" height="22" tabindex="0"></a>
       </div>
       <div class="dialog__panel">
         <h3 class="lodge__title">Уютное гнездышко для молодоженов</h3>
@@ -115,19 +115,20 @@
       </div>
     </div>
     <form class="notice__form"
+          action="https://1510.dump.academy/keksobooking"
           method="post"
           enctype="multipart/form-data"
-          autocomplete="off">
+          autocomplete="off" novalidate>
       <div class="form__content">
         <div class="form__panel">
           <div class="form__element  form__element--wide">
             <label for="title">Заголовок объявления</label>
-            <input id="title" name="title" type="text" placeholder="Милая, уютная квартирка, например">
+            <input id="title" class="form__title" name="title" type="text" minlength="30" maxlength="100" required placeholder="Милая, уютная квартирка, например">
           </div>
           <div class="form__row">
             <div class="form__element">
               <label for="type">Тип жилья</label>
-              <select id="type" name="type">
+              <select id="type" name="type" class="form__type">
                 <option value="flat" selected>Квартира</option>
                 <option value="bungalo">Лачуга</option>
                 <option value="house">Дом</option>
@@ -136,13 +137,13 @@
             </div>
             <div class="form__element">
               <label for="price">Цена за ночь, руб.</label>
-              <input id="price" name="price" type="number" placeholder="5000">
+              <input id="price" class="form__price" name="price" type="number" min="1000" max="1000000" value="1000" placeholder="1000">
             </div>
           </div>
           <div class="form__row">
             <div class="form__element">
               <label for="room_number">Кол-во комнат</label>
-              <select id="room_number" name="rooms">
+              <select id="room_number" name="rooms" class="form__room_number">
                 <option value="1" selected>1 комната</option>
                 <option value="2">2 комнаты</option>
                 <option value="3">3 комнаты</option>
@@ -151,10 +152,10 @@
             </div>
             <div class="form__element">
               <label for="capacity">Количество мест</label>
-              <select id="capacity" name="capacity">
-                <option value="3" selected>для 3 гостей</option>
+              <select id="capacity" name="capacity" class="form__capacity">
+                <option value="3" >для 3 гостей</option>
                 <option value="2">для 2 гостей</option>
-                <option value="1">для 1 гостя</option>
+                <option value="1" selected>для 1 гостя</option>
                 <option value="0">не для гостей</option>
               </select>
             </div>
@@ -167,12 +168,12 @@
         <div class="form__panel">
           <div class="form__element  form__element--wide">
             <label for="address">Адрес</label>
-            <input id="address" name="address" type="text">
+            <input id="address" class="form__address" name="address" type="text" required>
           </div>
           <div class="form__row">
             <div class="form__element">
               <label for="timein">Время заезда и выезда</label>
-              <select id="timein" name="timein">
+              <select id="timein" name="timein" class="form__timein">
                 <option value="12:00" selected>После 12</option>
                 <option value="13:00">После 13</option>
                 <option value="14:00">После 14</option>
@@ -180,9 +181,9 @@
             </div>
             <div class="form__element">
               <label for="timeout">&nbsp;</label>
-              <select id="timeout" name="timeout" title="Time to go out">
+              <select id="timeout" name="timeout" class="form__timeout" title="Time to go out">
                 <option value="12:00" selected>Выезд до 12</option>
-                <option value="13:00">Выезд до 13</option>
+                <option value="13:00" >Выезд до 13</option>
                 <option value="14:00">Выезд до 14</option>
               </select>
             </div>
