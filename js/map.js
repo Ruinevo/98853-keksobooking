@@ -235,6 +235,7 @@ function validationTitle(evt) {
 function validationPrice(minPrice) {
   if (priceField.value < minPrice) {
     priceField.classList.add('invalid');
+    return true;
   } else {
     return false;
   }
