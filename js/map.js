@@ -217,41 +217,40 @@ var typeField = form.querySelector('.form__type');
 var priceField = form.querySelector('.form__price');
 var capacityField = form.querySelector('.form__capacity');
 
-function setDefaultFieldColor(field) {
-  field.style.border = '1px solid rgb(217, 217, 211)';
-}
-
-function setInvalidFieldColor(field) {
-  field.style.borderColor = 'rgb(255, 100, 100)';
-}
 
 function validationAddress(evt) {
   if (addressField.value === '') {
-    setInvalidFieldColor(addressField);
     evt.preventDefault();
-    setTimeout(setDefaultFieldColor, 1500, addressField);
+    addressField.classList.add('invalid');
   }
 }
 
 function validationTitle(evt) {
   if (titleField.value.length < 30 || titleField.value.length > 100) {
-    setInvalidFieldColor(titleField);
     evt.preventDefault();
-    setTimeout(setDefaultFieldColor, 1500, titleField);
+    titleField.classList.add('invalid');
   }
 }
 
 function validationPrice(minPrice) {
   if (priceField.value < minPrice) {
-    setInvalidFieldColor(priceField);
-    setTimeout(setDefaultFieldColor, 1500, priceField);
+    priceField.classList.add('invalid');
   } else {
-    return true;
+    return false;
   }
 }
 
 form.addEventListener('submit', validationTitle);
 form.addEventListener('submit', validationAddress);
+
+form.addEventListener('submit', function () {
+  var invalidField = form.querySelectorAll('.invalid');
+  invalidField.forEach(function (elem) {
+    elem.addEventListener('input', function () {
+      elem.classList.remove('invalid');
+    });
+  });
+});
 
 timeInField.addEventListener('change', function () {
   timeOutField.selectedIndex = timeInField.selectedIndex;
@@ -266,21 +265,21 @@ function syncTypeWithPrice(evt) {
     case 0:
       priceField.setAttribute('min', 1000); // эти 4 строки не получается засунуть в функцию validationPrice, потому что параметр evt почему не передается через две функции
       var result = validationPrice(1000);
-      if (result !== true) {
+      if (result !== false) {
         evt.preventDefault();
       }
       break;
     case 1:
       priceField.setAttribute('min', 0);
       result = validationPrice(0);
-      if (result !== true) {
+      if (result !== false) {
         evt.preventDefault();
       }
       break;
     case 2:
       priceField.setAttribute('min', 5000);
       result = validationPrice(5000);
-      if (result !== true) {
+      if (result !== false) {
         evt.preventDefault();
       }
       validationPrice(5000);
@@ -288,7 +287,7 @@ function syncTypeWithPrice(evt) {
     case 3:
       priceField.setAttribute('min', 10000);
       result = validationPrice(10000);
-      if (result !== true) {
+      if (result !== false) {
         evt.preventDefault();
       }
       validationPrice(10000);
@@ -302,29 +301,28 @@ function syncRoomWithCapacity() {
   switch (roomNumbersField.selectedIndex) {
     case 0:
       capacityField.selectedIndex = 2;
-      break;
-    case 1:
-      capacityField.selectedIndex = 1;
-      break;
-    case 2:
-      capacityField.selectedIndex = 0;
+      capacityField.addEventListener('change', function () {
+        if (capacityField.selectedIndex === 1) {
+          roomNumbersField.selectedIndex = 1;
+        }
+      });
       break;
     case 3:
       capacityField.selectedIndex = 3;
+      capacityField.addEventListener('change', function () {
+        if (capacityField.selectedIndex === 1 || 2) {
+          roomNumbersField.selectedIndex = 2;
+        }
+      });
       break;
+    default:
+      capacityField.selectedIndex = 1;
   }
 }
-
 function syncCapacityWithRoom() {
   switch (capacityField.selectedIndex) {
     case 0:
       roomNumbersField.selectedIndex = 2;
-      break;
-    case 1:
-      roomNumbersField.selectedIndex = 1;
-      break;
-    case 2:
-      roomNumbersField.selectedIndex = 0;
       break;
     case 3:
       roomNumbersField.selectedIndex = 3;
@@ -332,5 +330,5 @@ function syncCapacityWithRoom() {
   }
 }
 
-roomNumbersField.addEventListener('click', syncRoomWithCapacity);
-capacityField.addEventListener('click', syncCapacityWithRoom);
+roomNumbersField.addEventListener('change', syncRoomWithCapacity);
+capacityField.addEventListener('change', syncCapacityWithRoom);
