@@ -233,9 +233,10 @@ function validationTitle(evt) {
 }
 
 function validationPrice(minPrice) {
-  if (priceField.value <= minPrice) {
+  if (priceField.value < minPrice) {
+    debugger;
     priceField.classList.add('invalid');
-    return 
+    return true;
   } else {
     return false;
   }
@@ -243,15 +244,6 @@ function validationPrice(minPrice) {
 
 form.addEventListener('submit', validationTitle);
 form.addEventListener('submit', validationAddress);
-
-form.addEventListener('submit', function () {
-  var invalidField = form.querySelectorAll('.invalid');
-  invalidField.forEach(function (elem) {
-    elem.addEventListener('input', function () {
-      elem.classList.remove('invalid');
-    });
-  });
-});
 
 timeInField.addEventListener('change', function () {
   timeOutField.selectedIndex = timeInField.selectedIndex;
@@ -333,3 +325,12 @@ function syncCapacityWithRoom() {
 
 roomNumbersField.addEventListener('change', syncRoomWithCapacity);
 capacityField.addEventListener('change', syncCapacityWithRoom);
+
+form.addEventListener('submit', function () {
+  var invalidField = form.querySelectorAll('.invalid');
+  invalidField.forEach(function (elem) {
+    elem.addEventListener('input', function () {
+      elem.classList.remove('invalid');
+    });
+  });
+});
