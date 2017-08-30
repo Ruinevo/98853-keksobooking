@@ -14,6 +14,8 @@ var generatorOptions = {
   CHECKOUTS: ['12:00', '13:00', '14:00'],
   TYPE_DESCS: ['Квартира', 'Бунгало', 'Дом']
 };
+var capacityValues = {NO_GUESTS: '0', ONE_GUEST: '1', TWO_GUEST: '2', THREE_GUEST: '3'};
+var roomsValues = {ONE_ROOM: '1', TWO_ROOMS: '2', THREE_ROOMS: '3', HUNDRED_ROOMS: '100'};
 
 function generaterandomOffers(options) {
   var randomOffers = [];
@@ -217,34 +219,6 @@ var typeField = form.querySelector('.form__type');
 var priceField = form.querySelector('.form__price');
 var capacityField = form.querySelector('.form__capacity');
 
-
-function validationAddress(evt) {
-  if (addressField.value === '') {
-    evt.preventDefault();
-    addressField.classList.add('invalid');
-  }
-}
-
-function validationTitle(evt) {
-  if (titleField.value.length < 30 || titleField.value.length > 100) {
-    evt.preventDefault();
-    titleField.classList.add('invalid');
-  }
-}
-
-function validationPrice(minPrice) {
-  if (priceField.value < minPrice) {
-    debugger;
-    priceField.classList.add('invalid');
-    return true;
-  } else {
-    return false;
-  }
-}
-
-form.addEventListener('submit', validationTitle);
-form.addEventListener('submit', validationAddress);
-
 timeInField.addEventListener('change', function () {
   timeOutField.selectedIndex = timeInField.selectedIndex;
 });
@@ -253,37 +227,19 @@ timeOutField.addEventListener('change', function () {
   timeInField.selectedIndex = timeOutField.selectedIndex;
 });
 
-function syncTypeWithPrice(evt) {
+function syncTypeWithPrice() {
   switch (typeField.selectedIndex) {
     case 0:
-      priceField.setAttribute('min', 1000); // эти 4 строки не получается засунуть в функцию validationPrice, потому что параметр evt почему не передается через две функции
-      var result = validationPrice(1000);
-      if (result !== false) {
-        evt.preventDefault();
-      }
+      priceField.min = '1000';
       break;
     case 1:
-      priceField.setAttribute('min', 0);
-      result = validationPrice(0);
-      if (result !== false) {
-        evt.preventDefault();
-      }
+      priceField.min = '0';
       break;
     case 2:
-      priceField.setAttribute('min', 5000);
-      result = validationPrice(5000);
-      if (result !== false) {
-        evt.preventDefault();
-      }
-      validationPrice(5000);
+      priceField.min = '5000';
       break;
     case 3:
-      priceField.setAttribute('min', 10000);
-      result = validationPrice(10000);
-      if (result !== false) {
-        evt.preventDefault();
-      }
-      validationPrice(10000);
+      priceField.min = '10000';
       break;
   }
 }
@@ -291,42 +247,48 @@ function syncTypeWithPrice(evt) {
 form.addEventListener('submit', syncTypeWithPrice);
 
 function syncRoomWithCapacity() {
-  switch (roomNumbersField.selectedIndex) {
-    case 0:
-      capacityField.selectedIndex = 2;
-      capacityField.addEventListener('change', function () {
-        if (capacityField.selectedIndex === 1) {
-          roomNumbersField.selectedIndex = 1;
-        }
-      });
+  switch (roomNumbersField.value) {
+    case roomsValues.ONE_ROOM:
+      capacityField.value = capacityValues.ONE_GUEST;
       break;
-    case 3:
-      capacityField.selectedIndex = 3;
-      capacityField.addEventListener('change', function () {
-        if (capacityField.selectedIndex === 1 || 2) {
-          roomNumbersField.selectedIndex = 2;
-        }
-      });
+    case roomsValues.HUNDRED_ROOMS:
+      capacityField.value = capacityValues.NO_GUESTS;
       break;
     default:
-      capacityField.selectedIndex = 1;
+      if (capacityField.value > roomsValues.value) {
+        capacityField.value = capacityValues.ONE_GUEST;
+      }
   }
 }
+
 function syncCapacityWithRoom() {
-  switch (capacityField.selectedIndex) {
-    case 0:
-      roomNumbersField.selectedIndex = 2;
+  switch (capacityField.value) {
+    case capacityValues.NO_GUESTS:
+      roomNumbersField.value = roomsValues.HUNDRED_ROOMS;
       break;
-    case 3:
-      roomNumbersField.selectedIndex = 3;
-      break;
+    default:
+      if (roomNumbersField.value < capacityField.value) {
+        roomNumbersField.value = capacityField.value;
+      }
   }
 }
 
 roomNumbersField.addEventListener('change', syncRoomWithCapacity);
 capacityField.addEventListener('change', syncCapacityWithRoom);
 
-form.addEventListener('submit', function () {
+form.addEventListener('submit', function (evt) {
+  if (addressField.value === '') {
+    evt.preventDefault();
+    addressField.classList.add('invalid');
+  }
+  if (titleField.value.length < 30 || titleField.value.length > 100) {
+    evt.preventDefault();
+    titleField.classList.add('invalid');
+  }
+  if (priceField.value < priceField.min) {
+    evt.preventDefault();
+    priceField.classList.add('invalid');
+  }
   var invalidField = form.querySelectorAll('.invalid');
   invalidField.forEach(function (elem) {
     elem.addEventListener('input', function () {
@@ -334,3 +296,5 @@ form.addEventListener('submit', function () {
     });
   });
 });
+
+
