@@ -276,18 +276,10 @@ function syncCapacityWithRoom() {
 roomsCountField.addEventListener('change', syncRoomsCountWithCapacity);
 capacityField.addEventListener('change', syncCapacityWithRoom);
 
-function removeInvalidClass() {
-  var invalidField = form.querySelectorAll('.invalid');
-  invalidField.forEach(function (elem) {
-    elem.addEventListener('input', function () {
-      elem.removeEventListener('input', function () {
-        elem.classList.remove('invalid');
-      });
-      elem.classList.remove('invalid');
-    });
-  });
+function removeErrorHighlight(evt) {
+  evt.target.classList.remove('invalid');
+  evt.target.removeEventListener(removeErrorHighlight);
 }
-
 
 form.addEventListener('submit', function (evt) {
   if (addressField.value === '') {
@@ -302,7 +294,8 @@ form.addEventListener('submit', function (evt) {
     evt.preventDefault();
     priceField.classList.add('invalid');
   }
-  removeInvalidClass();
+  var invalidFields = form.querySelectorAll('.invalid');
+  invalidFields.forEach(function (elem) {
+    elem.addEventListener('input', removeErrorHighlight);
+  });
 });
-
-
