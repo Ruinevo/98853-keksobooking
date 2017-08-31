@@ -230,21 +230,21 @@ timeOutField.addEventListener('change', function () {
 function syncTypeWithPrice() {
   switch (typeField.selectedIndex) {
     case 0:
-      priceField.min = '1000';
+      priceField.min = 1000;
       break;
     case 1:
-      priceField.min = '0';
+      priceField.min = 0;
       break;
     case 2:
-      priceField.min = '5000';
+      priceField.min = 5000;
       break;
     case 3:
-      priceField.min = '10000';
+      priceField.min = 10000;
       break;
   }
 }
 
-form.addEventListener('submit', syncTypeWithPrice);
+form.addEventListener('change', syncTypeWithPrice);
 
 function syncRoomsCountWithCapacity() {
   switch (roomsCountField.value) {
