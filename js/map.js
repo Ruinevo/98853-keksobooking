@@ -14,7 +14,7 @@ var generatorOptions = {
   CHECKOUTS: ['12:00', '13:00', '14:00'],
   TYPE_DESCS: ['Квартира', 'Бунгало', 'Дом']
 };
-var capacityValues = {NO_GUESTS: '0', ONE_GUEST: '1', TWO_GUEST: '2', THREE_GUEST: '3'};
+var capacityValues = {NO_GUESTS: '0', ONE_GUEST: '1', TWO_GUESTS: '2', THREE_GUESTS: '3'};
 var roomsValues = {ONE_ROOM: '1', TWO_ROOMS: '2', THREE_ROOMS: '3', HUNDRED_ROOMS: '100'};
 
 function generaterandomOffers(options) {
@@ -213,7 +213,7 @@ var form = document.querySelector('.notice__form');
 var titleField = form.querySelector('.form__title');
 var timeInField = form.querySelector('.form__timein');
 var timeOutField = form.querySelector('.form__timeout');
-var roomNumbersField = form.querySelector('.form__room_number');
+var roomsCountField = form.querySelector('.form__room_number');
 var addressField = form.querySelector('.form__address');
 var typeField = form.querySelector('.form__type');
 var priceField = form.querySelector('.form__price');
@@ -246,8 +246,8 @@ function syncTypeWithPrice() {
 
 form.addEventListener('submit', syncTypeWithPrice);
 
-function syncRoomWithCapacity() {
-  switch (roomNumbersField.value) {
+function syncRoomsCountWithCapacity() {
+  switch (roomsCountField.value) {
     case roomsValues.ONE_ROOM:
       capacityField.value = capacityValues.ONE_GUEST;
       break;
@@ -255,7 +255,7 @@ function syncRoomWithCapacity() {
       capacityField.value = capacityValues.NO_GUESTS;
       break;
     default:
-      if (capacityField.value > roomsValues.value) {
+      if (Number(capacityField.value) > Number(roomsCountField.value) || Number(capacityField.value) === Number(capacityValues.NO_GUESTS)) {
         capacityField.value = capacityValues.ONE_GUEST;
       }
   }
@@ -264,17 +264,30 @@ function syncRoomWithCapacity() {
 function syncCapacityWithRoom() {
   switch (capacityField.value) {
     case capacityValues.NO_GUESTS:
-      roomNumbersField.value = roomsValues.HUNDRED_ROOMS;
+      roomsCountField.value = roomsValues.HUNDRED_ROOMS;
       break;
     default:
-      if (roomNumbersField.value < capacityField.value) {
-        roomNumbersField.value = capacityField.value;
+      if (Number(roomsCountField.value) < Number(capacityField.value) || Number(roomsCountField.value) === Number(roomsValues.HUNDRED_ROOMS)) {
+        roomsCountField.value = capacityField.value;
       }
   }
 }
 
-roomNumbersField.addEventListener('change', syncRoomWithCapacity);
+roomsCountField.addEventListener('change', syncRoomsCountWithCapacity);
 capacityField.addEventListener('change', syncCapacityWithRoom);
+
+function removeInvalidClass() {
+  var invalidField = form.querySelectorAll('.invalid');
+  invalidField.forEach(function (elem) {
+    elem.addEventListener('input', function () {
+      elem.removeEventListener('input', function () {
+        elem.classList.remove('invalid');
+      });
+      elem.classList.remove('invalid');
+    });
+  });
+}
+
 
 form.addEventListener('submit', function (evt) {
   if (addressField.value === '') {
@@ -289,12 +302,7 @@ form.addEventListener('submit', function (evt) {
     evt.preventDefault();
     priceField.classList.add('invalid');
   }
-  var invalidField = form.querySelectorAll('.invalid');
-  invalidField.forEach(function (elem) {
-    elem.addEventListener('input', function () {
-      elem.classList.remove('invalid');
-    });
-  });
+  removeInvalidClass();
 });
 
 
