@@ -14,6 +14,8 @@ var generatorOptions = {
   CHECKOUTS: ['12:00', '13:00', '14:00'],
   TYPE_DESCS: ['Квартира', 'Бунгало', 'Дом']
 };
+var capacityValues = {NO_GUESTS: '0', ONE_GUEST: '1', TWO_GUESTS: '2', THREE_GUESTS: '3'};
+var roomsValues = {ONE_ROOM: '1', TWO_ROOMS: '2', THREE_ROOMS: '3', HUNDRED_ROOMS: '100'};
 
 function generaterandomOffers(options) {
   var randomOffers = [];
@@ -205,90 +207,96 @@ closeDialogBtn.addEventListener('keydown', function (evt) { // закрывае�
   }
 });
 
+
+
 // Задание 12
 var form = document.querySelector('.notice__form');
-var title = form.querySelector('.form__title');
-var timeIn = form.querySelector('.form__timein');
-var timeOut = form.querySelector('.form__timeout');
-var roomNumbers = form.querySelector('.form__room_number');
-var address = form.querySelector('.form__address');
-var type = document.querySelector('.form__type');
-var price = document.querySelector('.form__price');
-var capacity = form.querySelectorAll('.form__capacity option');
+var titleField = form.querySelector('.form__title');
+var timeInField = form.querySelector('.form__timein');
+var timeOutField = form.querySelector('.form__timeout');
+var roomsCountField = form.querySelector('.form__room_number');
+var addressField = form.querySelector('.form__address');
+var typeField = form.querySelector('.form__type');
+var priceField = form.querySelector('.form__price');
+var capacityField = form.querySelector('.form__capacity');
 
-function validationAddress(evt) {
-  if (address.value === '') {
-    address.style.border = '1px solid rgb(255, 0, 0)';
-    evt.preventDefault();
-  }
-}
-
-function validationTitle(evt) {
-  if (title.value.length < 30 || title.value.length > 100) {
-    title.style.border = '1px solid rgb(255, 0, 0)';
-    evt.preventDefault();
-  }
-}
-
-form.addEventListener('submit', validationTitle);
-form.addEventListener('submit', validationAddress);
-
-timeIn.addEventListener('change', function () {
-  timeOut.selectedIndex = timeIn.selectedIndex;
+timeInField.addEventListener('change', function () {
+  timeOutField.selectedIndex = timeInField.selectedIndex;
 });
 
-function connectTypeAndPrice() {
-  switch (type.selectedIndex) {
+timeOutField.addEventListener('change', function () {
+  timeInField.selectedIndex = timeOutField.selectedIndex;
+});
+
+function syncTypeWithPrice() {
+  switch (typeField.selectedIndex) {
     case 0:
-      price.value = '1000';
+      priceField.min = 1000;
       break;
     case 1:
-      price.value = '0';
+      priceField.min = 0;
       break;
     case 2:
-      price.value = '5000';
+      priceField.min = 5000;
       break;
     case 3:
-      price.value = '10000';
+      priceField.min = 10000;
       break;
   }
 }
 
-type.addEventListener('change', connectTypeAndPrice);
+form.addEventListener('change', syncTypeWithPrice);
 
-function deactivateSelect() {
-  capacity.forEach(function (elem) {
-    if (elem.classList.contains('hidden')) {
-      elem.classList.remove('hidden');
-    }
+function syncRoomsCountWithCapacity() {
+  switch (roomsCountField.value) {
+    case roomsValues.ONE_ROOM:
+      capacityField.value = capacityValues.ONE_GUEST;
+      break;
+    case roomsValues.HUNDRED_ROOMS:
+      capacityField.value = capacityValues.NO_GUESTS;
+      break;
+    default:
+      if (Number(capacityField.value) > Number(roomsCountField.value) || Number(capacityField.value) === Number(capacityValues.NO_GUESTS)) {
+        capacityField.value = capacityValues.ONE_GUEST;
+      }
+  }
+}
+
+function syncCapacityWithRoom() {
+  switch (capacityField.value) {
+    case capacityValues.NO_GUESTS:
+      roomsCountField.value = roomsValues.HUNDRED_ROOMS;
+      break;
+    default:
+      if (Number(roomsCountField.value) < Number(capacityField.value) || Number(roomsCountField.value) === Number(roomsValues.HUNDRED_ROOMS)) {
+        roomsCountField.value = capacityField.value;
+      }
+  }
+}
+
+roomsCountField.addEventListener('change', syncRoomsCountWithCapacity);
+capacityField.addEventListener('change', syncCapacityWithRoom);
+
+function removeErrorHighlight(evt) {
+  evt.target.classList.remove('invalid');
+  evt.target.removeEventListener(removeErrorHighlight);
+}
+
+form.addEventListener('submit', function (evt) {
+  if (addressField.value === '') {
+    evt.preventDefault();
+    addressField.classList.add('invalid');
+  }
+  if (titleField.value.length < 30 || titleField.value.length > 100) {
+    evt.preventDefault();
+    titleField.classList.add('invalid');
+  }
+  if (priceField.value < priceField.min) {
+    evt.preventDefault();
+    priceField.classList.add('invalid');
+  }
+  var invalidFields = form.querySelectorAll('.invalid');
+  invalidFields.forEach(function (elem) {
+    elem.addEventListener('input', removeErrorHighlight);
   });
-}
-
-function connectRoomAndCapacity() {
-
-  switch (roomNumbers.selectedIndex) {
-    case 0:
-      deactivateSelect();
-      capacity[0].classList.add('hidden');
-      capacity[1].classList.add('hidden');
-      capacity[3].classList.add('hidden');
-      break;
-    case 1:
-      deactivateSelect();
-      capacity[0].classList.add('hidden');
-      capacity[3].classList.add('hidden');
-      break;
-    case 2:
-      deactivateSelect();
-      capacity[3].classList.add('hidden');
-      break;
-    case 3:
-      deactivateSelect();
-      capacity[0].classList.add('hidden');
-      capacity[1].classList.add('hidden');
-      capacity[2].classList.add('hidden');
-      break;
-  }
-}
-
-roomNumbers.addEventListener('click', connectRoomAndCapacity);
+});

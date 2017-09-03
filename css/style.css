@@ -313,6 +313,10 @@ select option:hover {
     margin: 0 auto;
 }
 
+.invalid {
+    border-color: rgb(255, 100, 100) !important;
+}
+
 .notice__title {
     font-family: Roboto, serif;
     font-weight: bold;
