@@ -1,6 +1,6 @@
 'use strict';
 
-(function () {
+window.data = (function () {
   var generatorOptions = {
     FEATURES: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'],
     TITLES: ['Большая уютная квартира', 'Маленькая неуютная квартира', 'Огромный прекрасный дворец', 'Маленький ужасный дворец', 'Красивый гостевой домик', 'Некрасивый негостеприимный домик', 'Уютное бунгало далеко от моря', 'Неуютное бунгало по колено в воде'],
@@ -54,7 +54,7 @@
   }
 
   // функция создает данные для каждого предложения об аренде жилья
-  function generaterandomOffers(options) {
+  function generateRandomOffers(options) {
     var randomOffers = [];
     for (var i = 0; i < options.COUNTS; i++) {
       randomOffers[i] = {
@@ -86,7 +86,9 @@
     return randomOffers;
   }
 
-  window.randomOffers = generaterandomOffers(generatorOptions);
+  // экспортируем в глобальную область видимости
+  return {
+    randomOffers: generateRandomOffers(generatorOptions)
+  };
 
 })();
-
