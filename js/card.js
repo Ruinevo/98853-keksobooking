@@ -7,6 +7,9 @@ window.card = (function () {
   var closeDialogBtn = offerDialog.querySelector('.dialog__close');
   var dialogTemplateCopy = document.querySelector('#lodge-template').content;
   var TYPE_DESCS = ['Квартира', 'Бунгало', 'Дом'];
+  var nearbyAdsList = document.querySelector('.tokyo__pin-map');
+  var pins = nearbyAdsList.querySelectorAll('.pin');
+
   // функция связывает машинный тип жилья с человекочитаемым
   function getHumanFriendlyType(type) {
     switch (type) {
@@ -23,8 +26,6 @@ window.card = (function () {
     return humanType;
   }
 
-  var nearbyAdsList = document.querySelector('.tokyo__pin-map');
-  var pins = nearbyAdsList.querySelectorAll('.pin');
   function deactivateLastPin() {
     pins.forEach(function (elem) {
       if (elem.classList.contains('pin--active')) {
@@ -33,7 +34,14 @@ window.card = (function () {
     });
   }
 
-  function closeDialog() {
+     // закрытие при нажатии на ESC
+  function onDialogEscPress(evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      closeDialog();
+    }
+  }
+
+   function closeDialog() {
     deactivateLastPin();
     offerDialog.classList.add('hidden');
     document.removeEventListener('keydown', onDialogEscPress);
@@ -48,13 +56,6 @@ window.card = (function () {
       closeDialog();
     }
   });
-
-  // закрытие при нажатии на ESC
-  function onDialogEscPress(evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      closeDialog();
-    }
-  }
 
   // экспортируем в глобальную область видимости
   return {
@@ -83,6 +84,6 @@ window.card = (function () {
       document.addEventListener('keydown', onDialogEscPress);
     },
 
-    closeDialog: closeDialog()
+    closeDialog: closeDialog
   };
 })();
