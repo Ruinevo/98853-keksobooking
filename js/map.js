@@ -8,18 +8,14 @@ window.map = (function (data, card, pin) {
   // 2. C помощью модуля pin отрисовывает данные на карте
   var nearbyAdsList = document.querySelector('.tokyo__pin-map');
 
-  function onPinClick(elem) {
-    elem.addEventListener('click', function () {
-      card.openDialog(elem, randomOffers);
-    });
+  function onPinClick(evt) {
+    card.openDialog(evt.currentTarget, randomOffers);
   }
 
-  function onPinEnterPress(elem) {
-    elem.addEventListener('keydown', function (evt) {
-      if (evt.keyCode === ENTER_KEYCODE) {
-        card.openDialog(elem, randomOffers);
-      }
-    });
+  function onPinEnterPress(evt) {
+    if (evt.keyCode === ENTER_KEYCODE) {
+      card.openDialog(evt.currentTarget, randomOffers);
+    }
   }
 
   var fragment = document.createDocumentFragment();
@@ -34,8 +30,8 @@ window.map = (function (data, card, pin) {
 
   pins.forEach(function (elem) {
     if (!elem.classList.contains('pin__main')) {
-      onPinClick(elem);
-      onPinEnterPress(elem);
+      elem.addEventListener('click', onPinClick);
+      elem.addEventListener('keydown', onPinEnterPress);
     }
   });
 
