@@ -80,7 +80,7 @@ window.card = (function () {
       offerDialog.classList.remove('hidden');
       deactivateLastPin();
       elem.classList.add('pin--active');
-      window.card.renderOffer(data[elem.dataset.index]);
+      window.card.renderOffer(data);
       document.addEventListener('keydown', onDialogEscPress);
     },
 
