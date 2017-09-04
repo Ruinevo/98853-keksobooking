@@ -88,9 +88,9 @@ window.data = (function () {
 
   // экспортируем в глобальную область видимости
   return {
-    generateRandomOffers: function() {
+    generateRandomOffers: function () {
       return generateRandomOffers(generatorOptions);
     }
-  }
+  };
 })();
 

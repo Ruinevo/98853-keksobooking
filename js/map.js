@@ -10,16 +10,16 @@ window.map = (function (data, card, pin) {
 
   function onPinClick(elem) {
     elem.addEventListener('click', function () {
-        card.openDialog(elem, randomOffers);
-      });
+      card.openDialog(elem, randomOffers);
+    });
   }
 
   function onPinEnterPress(elem) {
     elem.addEventListener('keydown', function (evt) {
-        if (evt.keyCode === ENTER_KEYCODE) {
-          card.openDialog(elem, randomOffers);
-        }
-      });
+      if (evt.keyCode === ENTER_KEYCODE) {
+        card.openDialog(elem, randomOffers);
+      }
+    });
   }
 
   var fragment = document.createDocumentFragment();

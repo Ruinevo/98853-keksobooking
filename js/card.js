@@ -34,14 +34,14 @@ window.card = (function () {
     });
   }
 
-     // закрытие при нажатии на ESC
+  // закрытие при нажатии на ESC
   function onDialogEscPress(evt) {
     if (evt.keyCode === ESC_KEYCODE) {
       closeDialog();
     }
   }
 
-   function closeDialog() {
+  function closeDialog() {
     deactivateLastPin();
     offerDialog.classList.add('hidden');
     document.removeEventListener('keydown', onDialogEscPress);
