@@ -4,7 +4,7 @@ window.map = (function (data, card, pin) {
   var ENTER_KEYCODE = 13;
   // 1. Генерирует данные с помощью модуля data
   // по условию задания, данные создаются в data.js
-  var randomOffers = data.generateRandomOffers(data.initialData);
+  var randomOffers = data.generateRandomOffers();
   // 2. C помощью модуля pin отрисовывает данные на карте
   var nearbyAdsList = document.querySelector('.tokyo__pin-map');
 
@@ -40,3 +40,4 @@ window.map = (function (data, card, pin) {
   });
 
 })(window.data, window.card, window.pin);
+
