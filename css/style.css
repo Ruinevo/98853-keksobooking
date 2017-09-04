@@ -19,11 +19,17 @@ h2 {
     font-size: 15px;
 }
 
+.timein option[selected] {
+  display: none;
+}
+
+
 fieldset {
     border: none;
     padding: 0;
     margin: 0;
 }
+
 
 button[type=submit] {
     box-sizing: content-box;
