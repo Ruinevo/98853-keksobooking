@@ -8,37 +8,28 @@ window.map = (function (data, card, pin) {
   // 2. C помощью модуля pin отрисовывает данные на карте
   var nearbyAdsList = document.querySelector('.tokyo__pin-map');
 
-  function deactivateLastPin() {
-    var pins = document.querySelectorAll('.pin');
-    pins.forEach(function (elem) {
-      if (elem.classList.contains('pin--active')) {
-        elem.classList.remove('pin--active');
-      }
-    });
-  }
-
   function onPinClick(evt) {
-    card.showCard(randomOffers[evt.currentTarget.dataset.index]);
-    deactivateLastPin();
+    card.openDialog(randomOffers[evt.currentTarget.dataset.index]);
     evt.currentTarget.classList.add('pin--active');
   }
 
 
   function onPinEnterPress(evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      card.showCard(randomOffers[evt.currentTarget.dataset.index]);
-      deactivateLastPin();
+      card.openDialog(randomOffers[evt.currentTarget.dataset.index]);
       evt.currentTarget.classList.add('pin--active');
     }
   }
 
-
-  // отрисовываем пины на карте
   var fragment = document.createDocumentFragment();
   randomOffers.forEach(function (elem, idx) {
     fragment.appendChild(pin.renderPin(elem, idx));
   });
   nearbyAdsList.appendChild(fragment);
+
+  // 3. Отрисовывает данные в диалоге с помощью модуля card.js
+
+  card.renderOffer(randomOffers[1]);
 
   var pins = nearbyAdsList.querySelectorAll('.pin');
   pins.forEach(function (elem) {
@@ -114,10 +105,6 @@ window.map = (function (data, card, pin) {
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
   });
-
-  return {
-    deactivateLastPin: deactivateLastPin
-  };
 
 })(window.data, window.card, window.pin);
 

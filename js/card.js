@@ -25,53 +25,64 @@ window.card = (function () {
     return humanType;
   }
 
+  function deactivateLastPin() {
+    var pins = document.querySelectorAll('.pin');
+    pins.forEach(function (elem) {
+      if (elem.classList.contains('pin--active')) {
+        elem.classList.remove('pin--active');
+      }
+    });
+  }
+
   // закрытие при нажатии на ESC
   function onDialogEscPress(evt) {
     if (evt.keyCode === ESC_KEYCODE) {
-      hideCard();
+      closeDialog();
     }
   }
 
-  function hideCard() {
-    window.map.deactivateLastPin();
+  function closeDialog() {
+    deactivateLastPin();
     offerDialog.classList.add('hidden');
     document.removeEventListener('keydown', onDialogEscPress);
   }
 
   // закрытие при нажатии на крестик
-  closeDialogBtn.addEventListener('click', hideCard);
+  closeDialogBtn.addEventListener('click', closeDialog);
 
   // закрытие при нажатии enter, когда крестик в фокусе
   closeDialogBtn.addEventListener('keydown', function (evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      hideCard();
+      closeDialog();
     }
   });
 
-  function renderOffer(generatedOffer) {
-    var dialogDesc = document.querySelector('.dialog__panel');
-    var dialogTemplate = dialogTemplateCopy.cloneNode(true);
-    offerDialog.replaceChild(dialogTemplate, dialogDesc);
-    offerDialog.querySelector('.lodge__title').textContent = generatedOffer.offer.title;
-    offerDialog.querySelector('.lodge__address').textContent = generatedOffer.offer.address;
-    offerDialog.querySelector('.lodge__price').textContent = generatedOffer.offer.price + '₽/ночь';
-    offerDialog.querySelector('.lodge__type').textContent = getHumanFriendlyType(generatedOffer.offer.type);
-    offerDialog.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + generatedOffer.offer.guests + ' гостей в ' + generatedOffer.offer.rooms + ' комнатах';
-    offerDialog.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + generatedOffer.offer.checkin + ', выезд до ' + generatedOffer.offer.checkout;
-    generatedOffer.offer.features.forEach(function (renderElem) {
-      offerDialog.querySelector('.lodge__features').insertAdjacentHTML('afterbegin', '<span class="feature__image feature__image--' + renderElem + '">');
-    });
-    offerDialog.querySelector('.lodge__description').textContent = generatedOffer.offer.description;
-    offerDialog.querySelector('.dialog__title').querySelector('img').src = generatedOffer.author.avatar;
-  }
-
+  // экспортируем в глобальную область видимости
   return {
+    renderOffer: function (generatedOffer) {
+      var dialogDesc = document.querySelector('.dialog__panel');
+      var dialogTemplate = dialogTemplateCopy.cloneNode(true);
+      offerDialog.replaceChild(dialogTemplate, dialogDesc);
+      offerDialog.querySelector('.lodge__title').textContent = generatedOffer.offer.title;
+      offerDialog.querySelector('.lodge__address').textContent = generatedOffer.offer.address;
+      offerDialog.querySelector('.lodge__price').textContent = generatedOffer.offer.price + '₽/ночь';
+      offerDialog.querySelector('.lodge__type').textContent = getHumanFriendlyType(generatedOffer.offer.type);
+      offerDialog.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + generatedOffer.offer.guests + ' гостей в ' + generatedOffer.offer.rooms + ' комнатах';
+      offerDialog.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + generatedOffer.offer.checkin + ', выезд до ' + generatedOffer.offer.checkout;
+      generatedOffer.offer.features.forEach(function (renderElem) {
+        offerDialog.querySelector('.lodge__features').insertAdjacentHTML('afterbegin', '<span class="feature__image feature__image--' + renderElem + '">');
+      });
+      offerDialog.querySelector('.lodge__description').textContent = generatedOffer.offer.description;
+      offerDialog.querySelector('.dialog__title').querySelector('img').src = generatedOffer.author.avatar;
+    },
 
-    showCard: function showCard(data) {
+    openDialog: function (data) {
       offerDialog.classList.remove('hidden');
-      renderOffer(data);
+      deactivateLastPin();
+      window.card.renderOffer(data);
       document.addEventListener('keydown', onDialogEscPress);
-    }
+    },
 
+    closeDialog: closeDialog
   };
 })();
