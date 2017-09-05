@@ -36,28 +36,29 @@
 
   function syncTypeWithPrice(elem, value, data1, data2) {
     switch (value) {
-      case data1[0]:
-        elem.min = data2[0];
+      case data2[0]:
+        elem.min = data1[0];
         break;
-      case data1[1]:
-        elem.min = data2[1];
+      case data2[1]:
+        elem.min = data1[1];
         break;
-      case data1[2]:
-        elem.min = data2[2];
+      case data2[2]:
+        elem.min = data1[2];
         break;
-      case data1[3]:
-        elem.min = data2[3];
+      case data2[3]:
+        elem.min = data1[3];
         break;
     }
   }
 
   var syncFirstFieldValueAndSecondFieldMinValue = function (elem1, elem2, data1, data2, callback) {
     for (var i = 0; i < data1.length; i++) {
-      if (elem1.min !== data2[i]) {
-        callback(elem1, elem2.value, data2, data1);
+      if (elem2.value === data2[i]) {
+        if (elem1.min !== data2[i]) {
+        callback(elem1, elem2.value, data1, data2);
       }
     }
-
+   }
   };
 
   typeField.addEventListener('change', function () {
