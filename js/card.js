@@ -7,8 +7,7 @@ window.card = (function () {
   var closeDialogBtn = offerDialog.querySelector('.dialog__close');
   var dialogTemplateCopy = document.querySelector('#lodge-template').content;
   var TYPE_DESCS = ['Квартира', 'Бунгало', 'Дом'];
-  var nearbyAdsList = document.querySelector('.tokyo__pin-map');
-  var pins = nearbyAdsList.querySelectorAll('.pin');
+
 
   // функция связывает машинный тип жилья с человекочитаемым
   function getHumanFriendlyType(type) {
@@ -27,6 +26,7 @@ window.card = (function () {
   }
 
   function deactivateLastPin() {
+    var pins = document.querySelectorAll('.pin');
     pins.forEach(function (elem) {
       if (elem.classList.contains('pin--active')) {
         elem.classList.remove('pin--active');
@@ -76,10 +76,9 @@ window.card = (function () {
       offerDialog.querySelector('.dialog__title').querySelector('img').src = generatedOffer.author.avatar;
     },
 
-    openDialog: function (elem, data) {
+    openDialog: function (data) {
       offerDialog.classList.remove('hidden');
       deactivateLastPin();
-      elem.classList.add('pin--active');
       window.card.renderOffer(data);
       document.addEventListener('keydown', onDialogEscPress);
     },

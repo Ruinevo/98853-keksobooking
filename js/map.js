@@ -9,13 +9,15 @@ window.map = (function (data, card, pin) {
   var nearbyAdsList = document.querySelector('.tokyo__pin-map');
 
   function onPinClick(evt) {
-    card.openDialog(evt.currentTarget, randomOffers[evt.currentTarget.dataset.index]);
+    card.openDialog(randomOffers[evt.currentTarget.dataset.index]);
+    evt.currentTarget.classList.add('pin--active');
   }
 
 
   function onPinEnterPress(evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      card.openDialog(evt.currentTarget, randomOffers[evt.currentTarget.dataset.index]);
+      card.openDialog(randomOffers[evt.currentTarget.dataset.index]);
+      evt.currentTarget.classList.add('pin--active');
     }
   }
 
@@ -45,13 +47,13 @@ window.map = (function (data, card, pin) {
   };
 
   var MIN_COORDS = {
-    x: 300,
+    x: 0,
     y: 100
   };
 
   var MAX_COORDS = {
-    x: 900,
-    y: 500
+    x: 1150,
+    y: 570
   };
 
   var pinMain = document.querySelector('.pin__main');

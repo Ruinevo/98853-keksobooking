@@ -64,7 +64,7 @@ window.data = (function () {
 
         'offer': {
           'title': getRandomFrom(options.TITLES),
-          'address': randomAddress,
+          'address': '',
           'price': getRandomFromRange(1000, 1000000),
           'type': getRandomFrom(options.TYPES),
           'rooms': getRandomFromRange(1, 5),
@@ -82,6 +82,7 @@ window.data = (function () {
 
         }
       };
+      randomOffers[i].offer.address = randomOffers[i].location.x + ', ' + randomOffers[i].location.y;
     }
     return randomOffers;
   }
