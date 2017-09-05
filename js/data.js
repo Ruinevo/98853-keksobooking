@@ -38,7 +38,6 @@ window.data = (function () {
     return randomURL;
   }
 
-  var randomAddress = getRandomFromRange(300, 900) + ',' + getRandomFromRange(100, 500);
 
   // функция возвращает массив со случайным количсеством элементов в нем
   function getRandomFeatures(options) {
