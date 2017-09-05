@@ -55,10 +55,10 @@
     for (var i = 0; i < data1.length; i++) {
       if (elem2.value === data2[i]) {
         if (elem1.min !== data2[i]) {
-        callback(elem1, elem2.value, data1, data2);
+          callback(elem1, elem2.value, data1, data2);
+        }
       }
     }
-   }
   };
 
   typeField.addEventListener('change', function () {
