@@ -64,7 +64,7 @@ window.form = (function (sync) {
     }
   }
 
-  function syncCapacityWithRoomCount(elem, value) {
+  function syncCapacityWithRoomsCount(elem, value) {
     switch (value) { /* capacity.value */
       case capacityValues.NO_GUESTS:
         elem.value = roomsCountValues.HUNDRED_ROOMS;
@@ -77,7 +77,7 @@ window.form = (function (sync) {
   }
 
   sync.syncFields(capacityField, roomsCountField, syncRoomsCountWithCapacity);
-  sync.syncFields(roomsCountField, capacityField, syncCapacityWithRoomCount);
+  sync.syncFields(roomsCountField, capacityField, syncCapacityWithRoomsCount);
 
   // функция удаляет красную подсвтеку невалидного поля
   function removeErrorHighlight(evt) {
