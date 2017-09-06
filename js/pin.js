@@ -4,6 +4,10 @@
 window.pin = (function () {
   var PIN_WIDTH = 40;
   var PIN_HEIGHT = 40;
+  var PIN_OFFSET = {
+    left: PIN_WIDTH / 2,
+    top: PIN_HEIGHT
+  };
 
   return {
 
@@ -12,8 +16,8 @@ window.pin = (function () {
       var adsImg = document.createElement('img');
       adsElement.appendChild(adsImg);
       adsElement.classList.add('pin');
-      adsElement.style.left = generatedOffer.location.x + 'px';
-      adsElement.style.top = generatedOffer.location.y + 'px';
+      adsElement.style.left = generatedOffer.location.x + PIN_OFFSET.left + 'px';
+      adsElement.style.top = generatedOffer.location.y + PIN_OFFSET.top + 'px';
       adsElement.tabIndex = 0;
       adsImg.src = generatedOffer.author.avatar;
       adsImg.classList.add('rounded');

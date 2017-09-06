@@ -38,7 +38,6 @@ window.data = (function () {
     return randomURL;
   }
 
-  var randomAddress = getRandomFromRange(300, 900) + ',' + getRandomFromRange(100, 500);
 
   // функция возвращает массив со случайным количсеством элементов в нем
   function getRandomFeatures(options) {
@@ -64,7 +63,7 @@ window.data = (function () {
 
         'offer': {
           'title': getRandomFrom(options.TITLES),
-          'address': randomAddress,
+          'address': '',
           'price': getRandomFromRange(1000, 1000000),
           'type': getRandomFrom(options.TYPES),
           'rooms': getRandomFromRange(1, 5),
@@ -82,6 +81,7 @@ window.data = (function () {
 
         }
       };
+      randomOffers[i].offer.address = randomOffers[i].location.x + ', ' + randomOffers[i].location.y;
     }
     return randomOffers;
   }

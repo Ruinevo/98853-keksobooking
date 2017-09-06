@@ -1,90 +1,89 @@
 'use strict';
 
-(function () {
-  var capacityValues = {NO_GUESTS: '0', ONE_GUEST: '1', TWO_GUESTS: '2', THREE_GUESTS: '3'};
-  var roomsValues = {ONE_ROOM: '1', TWO_ROOMS: '2', THREE_ROOMS: '3', HUNDRED_ROOMS: '100'};
+window.form = (function (sync) {
   var form = document.querySelector('.notice__form');
   var titleField = form.querySelector('.form__title');
-  var timeInField = form.querySelector('.form__timein');
-  var timeOutField = form.querySelector('.form__timeout');
-  var roomsCountField = form.querySelector('.form__room_number');
   var addressField = form.querySelector('.form__address');
+  var timeOutField = form.querySelector('.form__timeout');
+  var timeInField = form.querySelector('.form__timein');
+
+  function syncValues(elem, value) {
+    if (elem.value !== value) {
+      elem.value = value;
+    }
+  }
+
+  sync.syncFields(timeOutField, timeInField, syncValues);
+  sync.syncFields(timeInField, timeOutField, syncValues);
+
+  // Универсальная односторонняя синхронизация значения первого поля с минимальным значением второго
+  // (в нашем проекте используется для синхронизации типа жилья и минимальной цены)
+
   var typeField = form.querySelector('.form__type');
   var priceField = form.querySelector('.form__price');
+
+  function syncValueAndMinValue(elem, value, possibleValues1, possibleValues2) {
+    switch (value) {
+      case possibleValues2[0]:
+        elem.min = possibleValues1[0];
+        break;
+      case possibleValues2[1]:
+        elem.min = possibleValues1[1];
+        break;
+      case possibleValues2[2]:
+        elem.min = possibleValues1[2];
+        break;
+      case possibleValues2[3]:
+        elem.min = possibleValues1[3];
+        break;
+    }
+  }
+
+  sync.syncFields(priceField, typeField, syncValueAndMinValue, [1000, 0, 5000, 10000], ['flat', 'bungalo', 'house', 'palace']);
+
+  // синхронизация количества гостей и количества комнат
+
+  var capacityValues = {NO_GUESTS: '0', ONE_GUEST: '1', TWO_GUESTS: '2', THREE_GUESTS: '3'};
+  var roomsCountValues = {ONE_ROOM: '1', TWO_ROOMS: '2', THREE_ROOMS: '3', HUNDRED_ROOMS: '100'};
+  var roomsCountField = form.querySelector('.form__room_number');
   var capacityField = form.querySelector('.form__capacity');
 
 
-  // синхронизация времени заезда и выезда
-  timeInField.addEventListener('change', function () {
-    timeOutField.selectedIndex = timeInField.selectedIndex;
-  });
-
-
-  // синхронизация времени выезда и заезда
-  timeOutField.addEventListener('change', function () {
-    timeInField.selectedIndex = timeOutField.selectedIndex;
-  });
-
-  // синхронизация минимальной цены и типа жилья
-  function syncTypeWithPrice() {
-    switch (typeField.selectedIndex) {
-      case 0:
-        priceField.min = 1000;
+  function syncRoomsCountWithCapacity(elem, value) {
+    switch (value) { /* roomField.value */
+      case roomsCountValues.ONE_ROOM:
+        elem.value = capacityValues.ONE_GUEST;
         break;
-      case 1:
-        priceField.min = 0;
-        break;
-      case 2:
-        priceField.min = 5000;
-        break;
-      case 3:
-        priceField.min = 10000;
-        break;
-    }
-  }
-
-  form.addEventListener('change', syncTypeWithPrice);
-
-  // синхрониазция количества комнат и количества гостей
-  function syncRoomsCountWithCapacity() {
-    switch (roomsCountField.value) {
-      case roomsValues.ONE_ROOM:
-        capacityField.value = capacityValues.ONE_GUEST;
-        break;
-      case roomsValues.HUNDRED_ROOMS:
-        capacityField.value = capacityValues.NO_GUESTS;
+      case roomsCountValues.HUNDRED_ROOMS:
+        elem.value = capacityValues.NO_GUESTS;
         break;
       default:
-        if (Number(capacityField.value) > Number(roomsCountField.value) || Number(capacityField.value) === Number(capacityValues.NO_GUESTS)) {
-          capacityField.value = capacityValues.ONE_GUEST;
+        if (Number(elem.value) > Number(value) || Number(elem.value) === Number(capacityValues.NO_GUESTS)) {
+          elem.value = capacityValues.ONE_GUEST;
         }
     }
   }
 
-  // синхрониазция количества гостей и количества комнат
-  function syncCapacityWithRoom() {
-    switch (capacityField.value) {
+  function syncCapacityWithRoomCount(elem, value) {
+    switch (value) { /* capacity.value */
       case capacityValues.NO_GUESTS:
-        roomsCountField.value = roomsValues.HUNDRED_ROOMS;
+        elem.value = roomsCountValues.HUNDRED_ROOMS;
         break;
       default:
-        if (Number(roomsCountField.value) < Number(capacityField.value) || Number(roomsCountField.value) === Number(roomsValues.HUNDRED_ROOMS)) {
-          roomsCountField.value = capacityField.value;
+        if (Number(elem.value) < Number(value) || Number(elem.value) === Number(roomsCountValues.HUNDRED_ROOMS)) {
+          elem.value = value;
         }
     }
   }
 
-  roomsCountField.addEventListener('change', syncRoomsCountWithCapacity);
-  capacityField.addEventListener('change', syncCapacityWithRoom);
-
+  sync.syncFields(capacityField, roomsCountField, syncRoomsCountWithCapacity);
+  sync.syncFields(roomsCountField, capacityField, syncCapacityWithRoomCount);
 
   // функция удаляет красную подсвтеку невалидного поля
   function removeErrorHighlight(evt) {
     evt.target.classList.remove('invalid');
     evt.target.removeEventListener('input', removeErrorHighlight);
   }
-
-
   // функция проверяет поля на валидность, и добавляет классную подсветку невалидным полям
   form.addEventListener('submit', function (evt) {
     if (addressField.value === '') {
@@ -103,7 +102,7 @@
     invalidFields.forEach(function (elem) {
       elem.addEventListener('input', removeErrorHighlight);
     });
+
+
   });
-})();
-
-
+})(window.sync);
