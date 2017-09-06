@@ -68,7 +68,6 @@ window.map = (function (data, card, pin) {
   var pinMain = document.querySelector('.pin__main');
   var addressField = document.querySelector('.form__address');
 
-
   pinMain.addEventListener('mousedown', function (evt) { // кнопку мыши нажали
 
     evt.preventDefault();
@@ -80,7 +79,7 @@ window.map = (function (data, card, pin) {
 
     var onMouseMove = function (moveEvt) { // функция передвижения мыши
       moveEvt.preventDefault();
-      var shift = { // растояние, на которое перемещаем пин
+      var shift = {
         x: (startCoords.x - moveEvt.clientX),
         y: (startCoords.y - moveEvt.clientY)
       };
@@ -93,13 +92,13 @@ window.map = (function (data, card, pin) {
       pinMain.style.top = (pinMain.offsetTop - shift.y) + 'px';
       pinMain.style.left = (pinMain.offsetLeft - shift.x) + 'px';
 
-      if (startCoords.x >= MAX_COORDS.x && shift.x < 0) {
+      if (pinMain.offsetLeft >= MAX_COORDS.x && shift.x < 0) {
         pinMain.style.left = MAX_COORDS.x + 'px';
-      } else if (startCoords.y >= MAX_COORDS.y && shift.y < 0) {
+      } else if (pinMain.offsetTop >= MAX_COORDS.y && shift.y < 0) {
         pinMain.style.top = MAX_COORDS.y + 'px';
-      } else if (startCoords.x <= MIN_COORDS.x && shift.x > 0) {
+      } else if (pinMain.offsetLeft <= MIN_COORDS.x && shift.x > 0) {
         pinMain.style.left = MIN_COORDS.x + 'px';
-      } else if (startCoords.y <= MIN_COORDS.y && shift.y > 0) {
+      } else if (pinMain.offsetTop <= MIN_COORDS.y && shift.y > 0) {
         pinMain.style.top = MIN_COORDS.y + 'px';
       }
     };
