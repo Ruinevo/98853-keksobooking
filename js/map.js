@@ -1,52 +1,73 @@
 'use strict';
 
-window.map = (function (data, card, pin) {
+window.map = (function (card, pin, backend) {
   var ENTER_KEYCODE = 13;
-  // 1. Генерирует данные с помощью модуля data
-  // по условию задания, данные создаются в data.js
-  var randomOffers = data.generateRandomOffers();
-  // 2. C помощью модуля pin отрисовывает данные на карте
   var nearbyAdsList = document.querySelector('.tokyo__pin-map');
 
   function deactivateLastPin() {
-    var pins = document.querySelectorAll('.pin');
-    pins.forEach(function (elem) {
+    window.pins.forEach(function (elem) {
       if (elem.classList.contains('pin--active')) {
         elem.classList.remove('pin--active');
       }
     });
   }
 
-  function onPinClick(evt) {
-    card.showCard(randomOffers[evt.currentTarget.dataset.index]);
+  function onPinClick(evt, data) {
+    card.showCard(data[evt.currentTarget.dataset.index]);
     deactivateLastPin();
     evt.currentTarget.classList.add('pin--active');
   }
 
 
-  function onPinEnterPress(evt) {
+  function onPinEnterPress(evt, data) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      card.showCard(randomOffers[evt.currentTarget.dataset.index]);
+      card.showCard(data[evt.currentTarget.dataset.index]);
       deactivateLastPin();
       evt.currentTarget.classList.add('pin--active');
     }
   }
+  var successHandler = function (data) {
+    var fragment = document.createDocumentFragment();
 
+    data.forEach(function (elem, idx) {
+      fragment.appendChild(pin.renderPin(elem, idx));
+    });
 
-  // отрисовываем пины на карте
-  var fragment = document.createDocumentFragment();
-  randomOffers.forEach(function (elem, idx) {
-    fragment.appendChild(pin.renderPin(elem, idx));
-  });
-  nearbyAdsList.appendChild(fragment);
+    nearbyAdsList.appendChild(fragment);
 
-  var pins = nearbyAdsList.querySelectorAll('.pin');
-  pins.forEach(function (elem) {
-    if (!elem.classList.contains('pin__main')) {
-      elem.addEventListener('click', onPinClick);
-      elem.addEventListener('keydown', onPinEnterPress);
-    }
-  });
+    window.pins = nearbyAdsList.querySelectorAll('.pin');
+
+    window.pins.forEach(function (elem) {
+      if (!elem.classList.contains('pin__main')) {
+        elem.addEventListener('click', function (evt) {
+          onPinClick(evt, data);
+        });
+        elem.addEventListener('keydown', function (evt) {
+          onPinEnterPress(evt, data);
+        });
+      }
+    });
+  };
+
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+    node.style.zIndex = '100';
+    node.style.margin = '0 auto';
+    node.style.textAlign = 'center';
+    node.style.padding = '15px';
+    node.style.position = 'absolute';
+    node.style.backgroundColor = 'rgba(124, 213, 225, 0.5)';
+    node.style.width = '400px';
+    node.style.boxShadow = '0 0 4px rgba(0,0,0,0.5)';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.top = '100px';
+    node.style.fontSize = '22px';
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
+
+  backend.load(successHandler, errorHandler);
 
   // Задание 16
 
@@ -100,6 +121,8 @@ window.map = (function (data, card, pin) {
         pinMain.style.left = MIN_COORDS.x + 'px';
       } else if (pinMain.offsetTop <= MIN_COORDS.y && shift.y > 0) {
         pinMain.style.top = MIN_COORDS.y + 'px';
+      } else {
+        addressField.classList.remove('invalid');
       }
     };
 
@@ -115,8 +138,9 @@ window.map = (function (data, card, pin) {
   });
 
   return {
-    deactivateLastPin: deactivateLastPin
+    deactivateLastPin: deactivateLastPin,
+    errorHandler: errorHandler
   };
 
-})(window.data, window.card, window.pin);
+})(window.card, window.pin, window.backend);
 

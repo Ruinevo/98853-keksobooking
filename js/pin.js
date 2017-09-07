@@ -9,6 +9,7 @@ window.pin = (function () {
     top: PIN_HEIGHT
   };
 
+
   return {
 
     renderPin: function (generatedOffer, idx) {
