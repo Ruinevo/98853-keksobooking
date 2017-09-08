@@ -1,6 +1,6 @@
 'use strict';
 
-window.form = (function (sync, backend, map) {
+window.form = (function (sync, backend, msg) {
   var form = document.querySelector('.notice__form');
   var titleField = form.querySelector('.form__title');
   var addressField = form.querySelector('.form__address');
@@ -91,31 +91,24 @@ window.form = (function (sync, backend, map) {
   var successHandler = function () {
     offerDialog.classList.add('hidden');
     form.reset();
-    map.errorHandler('Данные загружены успешно!');
+    msg.show('Данные загружены успешно!');
   };
 
 
   form.addEventListener('submit', function (evt) {
-    var j = 0;
     if (addressField.value === '') {
       evt.preventDefault();
       addressField.classList.add('invalid');
-    } else {
-      j++;
     }
 
     if (titleField.value.length < 30 || titleField.value.length > 100) {
       evt.preventDefault();
       titleField.classList.add('invalid');
-    } else {
-      j++;
     }
 
-    if (priceField.value < priceField.min) {
+    if (priceField.value < priceField.min || priceField.value > priceField.max) {
       evt.preventDefault();
       priceField.classList.add('invalid');
-    } else {
-      j++;
     }
 
     var invalidFields = form.querySelectorAll('.invalid');
@@ -123,10 +116,10 @@ window.form = (function (sync, backend, map) {
       elem.addEventListener('input', removeErrorHighlight);
     });
 
-    if (j === 3) {
+    if (invalidFields.length === 0) {
       evt.preventDefault();
-      backend.save(new FormData(form), successHandler, map.errorHandler);
+      backend.save(new FormData(form), successHandler, msg.show);
     }
   });
 
-})(window.sync, window.backend, window.map);
+})(window.sync, window.backend, window.msg);

@@ -37,6 +37,7 @@ window.backend = (function () {
     xhr.addEventListener('load', function () {
       if (xhr.status === 200) {
         onLoad(xhr.response);
+        window.offers = xhr.response;
       } else {
         onError('Неизвестный статус: ' + xhr.status + ' ' + xhr.statusText);
       }
@@ -53,7 +54,8 @@ window.backend = (function () {
 
   return {
     save: save,
-    load: load
+    load: load,
   };
+
 
 })();
