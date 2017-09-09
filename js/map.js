@@ -14,7 +14,7 @@ window.map = (function (card, pin, backend, msg) {
   }
 
   function onPinClick(evt) {
-    card.showCard(window.offers[evt.currentTarget.dataset.index]);
+    card.showCard(offers[evt.currentTarget.dataset.index]);
     deactivateLastPin();
     evt.currentTarget.classList.add('pin--active');
   }
@@ -22,19 +22,20 @@ window.map = (function (card, pin, backend, msg) {
 
   function onPinEnterPress(evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      card.showCard(window.offers[evt.currentTarget.dataset.index]);
+      card.showCard(offers[evt.currentTarget.dataset.index]);
       deactivateLastPin();
       evt.currentTarget.classList.add('pin--active');
     }
   }
 
+  var offers = [];
+
   var successHandler = function (data) {
     var fragment = document.createDocumentFragment();
-
+    offers = data;
     data.forEach(function (elem, idx) {
       fragment.appendChild(pin.renderPin(elem, idx));
     });
-
     nearbyAdsList.appendChild(fragment);
 
     var pins = nearbyAdsList.querySelectorAll('.pin');
@@ -46,8 +47,8 @@ window.map = (function (card, pin, backend, msg) {
     });
   };
 
-  backend.load(successHandler, msg.show);
 
+  backend.load(successHandler, msg.show);
   // Задание 16
 
   var USER_ICON_OFFSETS = {
@@ -116,9 +117,9 @@ window.map = (function (card, pin, backend, msg) {
     document.addEventListener('mouseup', onMouseUp);
   });
 
+
   return {
     deactivateLastPin: deactivateLastPin,
   };
 
 })(window.card, window.pin, window.backend, window.msg);
-
