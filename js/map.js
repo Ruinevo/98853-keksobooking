@@ -1,15 +1,11 @@
 'use strict';
 
-window.map = (function (data, card, pin) {
+window.map = (function (card, pin, backend, msg) {
   var ENTER_KEYCODE = 13;
-  // 1. Генерирует данные с помощью модуля data
-  // по условию задания, данные создаются в data.js
-  var randomOffers = data.generateRandomOffers();
-  // 2. C помощью модуля pin отрисовывает данные на карте
   var nearbyAdsList = document.querySelector('.tokyo__pin-map');
 
   function deactivateLastPin() {
-    var pins = document.querySelectorAll('.pin');
+    var pins = nearbyAdsList.querySelectorAll('.pin');
     pins.forEach(function (elem) {
       if (elem.classList.contains('pin--active')) {
         elem.classList.remove('pin--active');
@@ -18,7 +14,7 @@ window.map = (function (data, card, pin) {
   }
 
   function onPinClick(evt) {
-    card.showCard(randomOffers[evt.currentTarget.dataset.index]);
+    card.showCard(offers[evt.currentTarget.dataset.index]);
     deactivateLastPin();
     evt.currentTarget.classList.add('pin--active');
   }
@@ -26,28 +22,33 @@ window.map = (function (data, card, pin) {
 
   function onPinEnterPress(evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      card.showCard(randomOffers[evt.currentTarget.dataset.index]);
+      card.showCard(offers[evt.currentTarget.dataset.index]);
       deactivateLastPin();
       evt.currentTarget.classList.add('pin--active');
     }
   }
 
+  var offers = [];
 
-  // отрисовываем пины на карте
-  var fragment = document.createDocumentFragment();
-  randomOffers.forEach(function (elem, idx) {
-    fragment.appendChild(pin.renderPin(elem, idx));
-  });
-  nearbyAdsList.appendChild(fragment);
+  var successHandler = function (data) {
+    var fragment = document.createDocumentFragment();
+    offers = data;
+    data.forEach(function (elem, idx) {
+      fragment.appendChild(pin.renderPin(elem, idx));
+    });
+    nearbyAdsList.appendChild(fragment);
 
-  var pins = nearbyAdsList.querySelectorAll('.pin');
-  pins.forEach(function (elem) {
-    if (!elem.classList.contains('pin__main')) {
-      elem.addEventListener('click', onPinClick);
-      elem.addEventListener('keydown', onPinEnterPress);
-    }
-  });
+    var pins = nearbyAdsList.querySelectorAll('.pin');
+    pins.forEach(function (elem) {
+      if (!elem.classList.contains('pin__main')) {
+        elem.addEventListener('click', onPinClick);
+        elem.addEventListener('keydown', onPinEnterPress);
+      }
+    });
+  };
 
+
+  backend.load(successHandler, msg.show);
   // Задание 16
 
   var USER_ICON_OFFSETS = {
@@ -100,6 +101,8 @@ window.map = (function (data, card, pin) {
         pinMain.style.left = MIN_COORDS.x + 'px';
       } else if (pinMain.offsetTop <= MIN_COORDS.y && shift.y > 0) {
         pinMain.style.top = MIN_COORDS.y + 'px';
+      } else {
+        addressField.classList.remove('invalid');
       }
     };
 
@@ -114,9 +117,9 @@ window.map = (function (data, card, pin) {
     document.addEventListener('mouseup', onMouseUp);
   });
 
+
   return {
-    deactivateLastPin: deactivateLastPin
+    deactivateLastPin: deactivateLastPin,
   };
 
-})(window.data, window.card, window.pin);
-
+})(window.card, window.pin, window.backend, window.msg);

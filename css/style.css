@@ -675,3 +675,17 @@ select option:hover {
 .rounded {
     border-radius: 50%;
 }
+
+.message {
+    display: none;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 80px;
+    width: 400px;
+    box-shadow: 0 0 4px rgba(0,0,0,0.5);
+    margin: 0 auto;
+    padding: 15px;
+    background-color: rgba(124, 213, 225, 1);
+    text-align: center;
+}

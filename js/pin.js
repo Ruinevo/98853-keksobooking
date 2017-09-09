@@ -9,6 +9,7 @@ window.pin = (function () {
     top: PIN_HEIGHT
   };
 
+
   return {
 
     renderPin: function (generatedOffer, idx) {
@@ -16,8 +17,8 @@ window.pin = (function () {
       var adsImg = document.createElement('img');
       adsElement.appendChild(adsImg);
       adsElement.classList.add('pin');
-      adsElement.style.left = generatedOffer.location.x + PIN_OFFSET.left + 'px';
-      adsElement.style.top = generatedOffer.location.y + PIN_OFFSET.top + 'px';
+      adsElement.style.left = (generatedOffer.location.x - PIN_OFFSET.left) + 'px';
+      adsElement.style.top = (generatedOffer.location.y - PIN_OFFSET.top) + 'px';
       adsElement.tabIndex = 0;
       adsImg.src = generatedOffer.author.avatar;
       adsImg.classList.add('rounded');

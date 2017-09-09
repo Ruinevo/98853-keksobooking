@@ -1,11 +1,13 @@
 'use strict';
 
-window.form = (function (sync) {
+window.form = (function (sync, backend, msg) {
   var form = document.querySelector('.notice__form');
   var titleField = form.querySelector('.form__title');
   var addressField = form.querySelector('.form__address');
   var timeOutField = form.querySelector('.form__timeout');
   var timeInField = form.querySelector('.form__timein');
+  var offerDialog = document.querySelector('.dialog');
+
 
   function syncValues(elem, value) {
     if (elem.value !== value) {
@@ -84,25 +86,40 @@ window.form = (function (sync) {
     evt.target.classList.remove('invalid');
     evt.target.removeEventListener('input', removeErrorHighlight);
   }
-  // функция проверяет поля на валидность, и добавляет классную подсветку невалидным полям
+  // только если все три поля валидны, отправляем данные
+
+  var successHandler = function () {
+    offerDialog.classList.add('hidden');
+    form.reset();
+    msg.show('Данные загружены успешно!');
+  };
+
+
   form.addEventListener('submit', function (evt) {
     if (addressField.value === '') {
       evt.preventDefault();
       addressField.classList.add('invalid');
     }
+
     if (titleField.value.length < 30 || titleField.value.length > 100) {
       evt.preventDefault();
       titleField.classList.add('invalid');
     }
-    if (priceField.value < priceField.min) {
+
+    if (priceField.value < priceField.min || priceField.value > priceField.max) {
       evt.preventDefault();
       priceField.classList.add('invalid');
     }
+
     var invalidFields = form.querySelectorAll('.invalid');
     invalidFields.forEach(function (elem) {
       elem.addEventListener('input', removeErrorHighlight);
     });
 
-
+    if (invalidFields.length === 0) {
+      evt.preventDefault();
+      backend.save(new FormData(form), successHandler, msg.show);
+    }
   });
-})(window.sync);
+
+})(window.sync, window.backend, window.msg);
