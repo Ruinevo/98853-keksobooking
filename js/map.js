@@ -1,54 +1,7 @@
 'use strict';
 
-window.map = (function (card, pin, backend, msg) {
-  var ENTER_KEYCODE = 13;
-  var nearbyAdsList = document.querySelector('.tokyo__pin-map');
+window.map = (function () {
 
-  function deactivateLastPin() {
-    var pins = nearbyAdsList.querySelectorAll('.pin');
-    pins.forEach(function (elem) {
-      if (elem.classList.contains('pin--active')) {
-        elem.classList.remove('pin--active');
-      }
-    });
-  }
-
-  function onPinClick(evt) {
-    card.showCard(offers[evt.currentTarget.dataset.index]);
-    deactivateLastPin();
-    evt.currentTarget.classList.add('pin--active');
-  }
-
-
-  function onPinEnterPress(evt) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      card.showCard(offers[evt.currentTarget.dataset.index]);
-      deactivateLastPin();
-      evt.currentTarget.classList.add('pin--active');
-    }
-  }
-
-  var offers = [];
-
-  var successHandler = function (data) {
-    var fragment = document.createDocumentFragment();
-    offers = data;
-    data.forEach(function (elem, idx) {
-      fragment.appendChild(pin.renderPin(elem, idx));
-    });
-    nearbyAdsList.appendChild(fragment);
-
-    var pins = nearbyAdsList.querySelectorAll('.pin');
-    pins.forEach(function (elem) {
-      if (!elem.classList.contains('pin__main')) {
-        elem.addEventListener('click', onPinClick);
-        elem.addEventListener('keydown', onPinEnterPress);
-      }
-    });
-  };
-
-
-  backend.load(successHandler, msg.show);
   // Задание 16
 
   var USER_ICON_OFFSETS = {
@@ -117,9 +70,4 @@ window.map = (function (card, pin, backend, msg) {
     document.addEventListener('mouseup', onMouseUp);
   });
 
-
-  return {
-    deactivateLastPin: deactivateLastPin,
-  };
-
-})(window.card, window.pin, window.backend, window.msg);
+})();
