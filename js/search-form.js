@@ -75,15 +75,11 @@ window.search = (function (map, util) {
 
   var filters = document.querySelectorAll('.tokyo__filter');
   filters.forEach(function (elem) {
-    elem.addEventListener('change', function () {
-      util.debounce(updatePins);
-    });
+    elem.addEventListener('change', util.debounce(updatePins));
   });
 
   housingFeatures.forEach(function (elem) {
-    elem.addEventListener('change', function () {
-      util.debounce(updatePins);
-    });
+    elem.addEventListener('change', util.debounce(updatePins));
   });
 
 
