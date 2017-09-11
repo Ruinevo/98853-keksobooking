@@ -4,7 +4,7 @@ window.map = (function (pin, backend, msg, card) {
 
   var nearbyAdsList = document.querySelector('.tokyo__pin-map');
   var ENTER_KEYCODE = 13;
-  var filteredData = [];
+  var offers = [];
 
   function deactivateLastPin() {
     var pins = nearbyAdsList.querySelectorAll('.pin');
@@ -16,7 +16,7 @@ window.map = (function (pin, backend, msg, card) {
   }
 
   function onPinClick(evt) {
-    card.showCard(filteredData[evt.currentTarget.dataset.index]); // отрисовываем мы dialog окна НЕ массива offers, а массива отфильрованных данных. 
+    card.showCard(offers[evt.currentTarget.dataset.index]); // отрисовываем мы dialog окна НЕ массива offers, а массива отфильрованных данных. 
     deactivateLastPin();
     evt.currentTarget.classList.add('pin--active');
   }
@@ -24,14 +24,14 @@ window.map = (function (pin, backend, msg, card) {
 
   function onPinEnterPress(evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      card.showCard(filteredData[evt.currentTarget.dataset.index]);
+      card.showCard(offers[evt.currentTarget.dataset.index]);
       deactivateLastPin();
       evt.currentTarget.classList.add('pin--active');
     }
   }
 
   function render(data) { // отрисовывем пины
-    filteredData = data; // кладем в эту переменную массив отфильтрованных данных, чтобы потом отрисовать для него dialog окна
+    offers = data; // для какого массива мы отрисовываем пины, для этого же массива мы и рисуем диалоги
     var fragment = document.createDocumentFragment();
     data.forEach(function (elem, idx) {
       fragment.appendChild(pin.renderPin(elem, idx));
