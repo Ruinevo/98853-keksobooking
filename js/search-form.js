@@ -1,41 +1,13 @@
 'use strict';
 
-window.render = (function (backend, card, pin, msg, util) {
-  var nearbyAdsList = document.querySelector('.tokyo__pin-map');
-  var ENTER_KEYCODE = 13;
-  var offers = [];
-
-  function deactivateLastPin() {
-    var pins = nearbyAdsList.querySelectorAll('.pin');
-    pins.forEach(function (elem) {
-      if (elem.classList.contains('pin--active')) {
-        elem.classList.remove('pin--active');
-      }
-    });
-  }
-
-  function onPinClick(evt, data) {
-    card.showCard(data[evt.currentTarget.dataset.index]);
-    deactivateLastPin();
-    evt.currentTarget.classList.add('pin--active');
-  }
-
-
-  function onPinEnterPress(evt, data) {
-    if (evt.keyCode === ENTER_KEYCODE) {
-      card.showCard(data[evt.currentTarget.dataset.index]);
-      deactivateLastPin();
-      evt.currentTarget.classList.add('pin--active');
-    }
-  }
+window.search = (function (map, util) {
 
   var filtersForm = document.querySelector('.tokyo__filters');
   var housingType = filtersForm.querySelector('#housing_type');
   var housingRooms = filtersForm.querySelector('#housing_room-number');
   var housingGuests = filtersForm.querySelector('#housing_guests-number');
   var housingPrice = filtersForm.querySelector('#housing_price');
-  var housingFeatures = filtersForm.querySelectorAll('.checkbox');
-
+  var housingFeatures = filtersForm.querySelectorAll('.feature input');
   function removePins() { // функция, для удаления всех пинов с карты (кроме main pin)
     var pins = document.querySelectorAll('.pin');
     pins.forEach(function (elem) {
@@ -45,28 +17,9 @@ window.render = (function (backend, card, pin, msg, util) {
     });
   }
 
-  function render(data) { // отрисовывем пины
-    var fragment = document.createDocumentFragment();
-    data.forEach(function (elem, idx) {
-      fragment.appendChild(pin.renderPin(elem, idx));
-    });
-    nearbyAdsList.appendChild(fragment);
-    var pins = nearbyAdsList.querySelectorAll('.pin');
-    pins.forEach(function (elem) {
-      if (!elem.classList.contains('pin__main')) {
-        elem.addEventListener('click', function (evt) {
-          onPinClick(evt, data);
-        });
-        elem.addEventListener('keydown', function (evt) {
-          onPinEnterPress(evt, data);
-        });
-      }
-    });
-  }
-
   var filterOffersByType = function (elem) { // фильтр по типу жилья
     if (housingType.value === 'any') {
-      return offers;
+      return window.offers;
     } else {
       return elem.offer.type === housingType.value;
     }
@@ -74,16 +27,16 @@ window.render = (function (backend, card, pin, msg, util) {
 
   var filterOffersByRoomsCount = function (elem) { // фильтр по количеству комнат
     if (housingRooms.value === 'any') {
-      return offers;
+      return window.offers;
     } else {
       return elem.offer.rooms === Number(housingRooms.value);
     }
   };
 
-  var filterOffersByPrice = function (elem) {
+  var filterOffersByPrice = function (elem) { // фильтр по цене
     switch (housingPrice.value) {
       case 'any':
-        return offers;
+        return window.offers;
       case 'middle':
         return elem.offer.price >= 10000 && elem.offer.price <= 50000;
       case 'low':
@@ -98,7 +51,7 @@ window.render = (function (backend, card, pin, msg, util) {
 
   var filterOffersByGuestsCount = function (elem) { // фильтр по количеству гостей
     if (housingGuests.value === 'any') {
-      return offers;
+      return window.offers;
     } else {
       return elem.offer.guests === Number(housingGuests.value);
     }
@@ -109,19 +62,15 @@ window.render = (function (backend, card, pin, msg, util) {
     var checkedFeatures = Array.prototype.map.call(featureCheckedCheckboxes, function (checkbox) {
       return checkbox.value;
     });
-    if (checkedFeatures.every(function (feature) {
+    return checkedFeatures.every(function (feature) {
       return elem.offer.features.indexOf(feature) > -1;
-    })) {
-      return elem;
-    } else {
-      return false;
-    }
+    });
   };
 
   var updatePins = function () { // функция отрисовывает профильтрованные пины
     removePins();
-    var filteredData = offers.filter(filterOffersByType).filter(filterOffersByPrice).filter(filterOffersByRoomsCount).filter(filterOffersByGuestsCount).filter(filterOffersByFeatures);
-    render(filteredData);
+    var filteredData = window.offers.filter(filterOffersByType).filter(filterOffersByPrice).filter(filterOffersByRoomsCount).filter(filterOffersByGuestsCount).filter(filterOffersByFeatures);
+    map.render(filteredData);
   };
 
   var filters = document.querySelectorAll('.tokyo__filter');
@@ -137,11 +86,6 @@ window.render = (function (backend, card, pin, msg, util) {
     });
   });
 
-  var successHandler = function (data) {
-    offers = data;
-    render(offers);
-  };
 
-  backend.load(successHandler, msg.show);
+})(window.map, window.util);
 
-})(window.backend, window.card, window.pin, window.msg, window.util);
