@@ -1,15 +1,18 @@
 'use strict';
 
-window.search = (function (map, util) {
+window.search = (function (map, backend, util, msg) {
 
+  var nearbyAdsList = document.querySelector('.tokyo__pin-map');
   var filtersForm = document.querySelector('.tokyo__filters');
   var housingType = filtersForm.querySelector('#housing_type');
   var housingRooms = filtersForm.querySelector('#housing_room-number');
   var housingGuests = filtersForm.querySelector('#housing_guests-number');
   var housingPrice = filtersForm.querySelector('#housing_price');
   var housingFeatures = filtersForm.querySelectorAll('.feature input');
+  var offers = [];
+
   function removePins() { // функция, для удаления всех пинов с карты (кроме main pin)
-    var pins = document.querySelectorAll('.pin');
+    var pins = nearbyAdsList.querySelectorAll('.pin');
     pins.forEach(function (elem) {
       if (!elem.classList.contains('pin__main')) {
         elem.remove();
@@ -19,7 +22,7 @@ window.search = (function (map, util) {
 
   var filterOffersByType = function (elem) { // фильтр по типу жилья
     if (housingType.value === 'any') {
-      return window.offers;
+      return offers;
     } else {
       return elem.offer.type === housingType.value;
     }
@@ -27,7 +30,7 @@ window.search = (function (map, util) {
 
   var filterOffersByRoomsCount = function (elem) { // фильтр по количеству комнат
     if (housingRooms.value === 'any') {
-      return window.offers;
+      return offers;
     } else {
       return elem.offer.rooms === Number(housingRooms.value);
     }
@@ -36,7 +39,7 @@ window.search = (function (map, util) {
   var filterOffersByPrice = function (elem) { // фильтр по цене
     switch (housingPrice.value) {
       case 'any':
-        return window.offers;
+        return offers;
       case 'middle':
         return elem.offer.price >= 10000 && elem.offer.price <= 50000;
       case 'low':
@@ -51,7 +54,7 @@ window.search = (function (map, util) {
 
   var filterOffersByGuestsCount = function (elem) { // фильтр по количеству гостей
     if (housingGuests.value === 'any') {
-      return window.offers;
+      return offers;
     } else {
       return elem.offer.guests === Number(housingGuests.value);
     }
@@ -69,7 +72,7 @@ window.search = (function (map, util) {
 
   var updatePins = function () { // функция отрисовывает профильтрованные пины
     removePins();
-    var filteredData = window.offers.filter(filterOffersByType).filter(filterOffersByPrice).filter(filterOffersByRoomsCount).filter(filterOffersByGuestsCount).filter(filterOffersByFeatures);
+    var filteredData = offers.filter(filterOffersByType).filter(filterOffersByPrice).filter(filterOffersByRoomsCount).filter(filterOffersByGuestsCount).filter(filterOffersByFeatures);
     map.render(filteredData);
   };
 
@@ -82,6 +85,12 @@ window.search = (function (map, util) {
     elem.addEventListener('change', util.debounce(updatePins));
   });
 
+  var successHandler = function (data) {
+    offers = data;
+  };
 
-})(window.map, window.util);
+  backend.load(successHandler, msg.show);
+
+
+})(window.map, window.backend, window.util, window.msg);
 

@@ -4,6 +4,7 @@ window.map = (function (pin, backend, msg, card) {
 
   var nearbyAdsList = document.querySelector('.tokyo__pin-map');
   var ENTER_KEYCODE = 13;
+  var filteredData = [];
 
   function deactivateLastPin() {
     var pins = nearbyAdsList.querySelectorAll('.pin');
@@ -14,22 +15,23 @@ window.map = (function (pin, backend, msg, card) {
     });
   }
 
-  function onPinClick(evt, data) {
-    card.showCard(data[evt.currentTarget.dataset.index]);
+  function onPinClick(evt) {
+    card.showCard(filteredData[evt.currentTarget.dataset.index]); // отрисовываем мы dialog окна НЕ массива offers, а массива отфильрованных данных. 
     deactivateLastPin();
     evt.currentTarget.classList.add('pin--active');
   }
 
 
-  function onPinEnterPress(evt, data) {
+  function onPinEnterPress(evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      card.showCard(data[evt.currentTarget.dataset.index]);
+      card.showCard(filteredData[evt.currentTarget.dataset.index]);
       deactivateLastPin();
       evt.currentTarget.classList.add('pin--active');
     }
   }
 
   function render(data) { // отрисовывем пины
+    filteredData = data; // кладем в эту переменную массив отфильтрованных данных, чтобы потом отрисовать для него dialog окна
     var fragment = document.createDocumentFragment();
     data.forEach(function (elem, idx) {
       fragment.appendChild(pin.renderPin(elem, idx));
@@ -38,18 +40,13 @@ window.map = (function (pin, backend, msg, card) {
     var pins = nearbyAdsList.querySelectorAll('.pin');
     pins.forEach(function (elem) {
       if (!elem.classList.contains('pin__main')) {
-        elem.addEventListener('click', function (evt) {
-          onPinClick(evt, data);
-        });
-        elem.addEventListener('keydown', function (evt) {
-          onPinEnterPress(evt, data);
-        });
+        elem.addEventListener('click', onPinClick);
+        elem.addEventListener('keydown', onPinEnterPress);
       }
     });
   }
 
   var successHandler = function (data) {
-    window.offers = data;
     render(data);
   };
 
