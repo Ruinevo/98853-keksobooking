@@ -18,7 +18,7 @@ window.pin = (function () {
     adsElement.tabIndex = 0;
     adsImg.src = generatedOffer.author.avatar;
     adsImg.classList.add('rounded');
-    adsImg.style.width = PIN_WIDTH + 'px'
+    adsImg.style.width = PIN_WIDTH + 'px';
     adsImg.style.height = PIN_HEIGHT + 'px';
     adsElement.dataset.index = idx;
     return adsElement;
