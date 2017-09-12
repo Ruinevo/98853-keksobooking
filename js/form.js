@@ -1,6 +1,6 @@
 'use strict';
 
-window.form = (function (sync, backend, msg) {
+window.form = (function (sync, backend, msg, util) {
   var form = document.querySelector('.notice__form');
   var titleField = form.querySelector('.form__title');
   var addressField = form.querySelector('.form__address');
@@ -112,7 +112,7 @@ window.form = (function (sync, backend, msg) {
     }
 
     var invalidFields = form.querySelectorAll('.invalid');
-    invalidFields.forEach(function (elem) {
+    util.forEach(invalidFields, function (elem) {
       elem.addEventListener('input', removeErrorHighlight);
     });
 
@@ -122,4 +122,4 @@ window.form = (function (sync, backend, msg) {
     }
   });
 
-})(window.sync, window.backend, window.msg);
+})(window.sync, window.backend, window.msg, window.util);

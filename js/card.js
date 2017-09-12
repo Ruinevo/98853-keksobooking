@@ -1,6 +1,6 @@
 'use strict';
 
-window.card = (function () {
+window.card = (function (map) {
   var ESC_KEYCODE = 27;
   var ENTER_KEYCODE = 13;
   var offerDialog = document.querySelector('.dialog');
@@ -74,4 +74,4 @@ window.card = (function () {
     }
 
   };
-})();
+})(window.map);

@@ -1,14 +1,14 @@
 'use strict';
 
 window.msg = (function () {
-  var TIMEOUT_MSG = 1500;
+  var MSG_SHOW_DURATION = 1500;
   function showMessage(errorMessage) {
     var message = document.querySelector('.message');
     message.textContent = errorMessage;
     message.style.display = 'block';
     setTimeout(function () {
       message.style.display = 'none';
-    }, TIMEOUT_MSG);
+    }, MSG_SHOW_DURATION);
   }
 
   return {

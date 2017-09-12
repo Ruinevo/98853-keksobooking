@@ -9,7 +9,7 @@ window.map = (function (pin, backend, msg, card, util) {
 
   function deactivateLastPin() {
     var pins = nearbyAdsList.querySelectorAll('.pin');
-    pins.forEach(function (elem) {
+    util.forEach(pins, function (elem) {
       if (elem.classList.contains('pin--active')) {
         elem.classList.remove('pin--active');
       }
@@ -39,7 +39,7 @@ window.map = (function (pin, backend, msg, card, util) {
     });
     nearbyAdsList.appendChild(fragment);
     var pins = nearbyAdsList.querySelectorAll('.pin');
-    pins.forEach(function (elem) {
+    util.forEach(pins, function (elem) {
       if (!elem.classList.contains('pin__main')) {
         elem.addEventListener('click', onPinClick);
         elem.addEventListener('keydown', onPinEnterPress);
