@@ -1,8 +1,11 @@
 'use strict';
 
-window.map = (function (card, pin, backend, msg) {
-  var ENTER_KEYCODE = 13;
+window.map = (function (pin, backend, msg, card, util) {
+
   var nearbyAdsList = document.querySelector('.tokyo__pin-map');
+  var ENTER_KEYCODE = 13;
+  var START_AMOUNT_OF_ELEMENTS = 3;
+  var renderableOffers = [];
 
   function deactivateLastPin() {
     var pins = nearbyAdsList.querySelectorAll('.pin');
@@ -14,7 +17,7 @@ window.map = (function (card, pin, backend, msg) {
   }
 
   function onPinClick(evt) {
-    card.showCard(offers[evt.currentTarget.dataset.index]);
+    card.showCard(renderableOffers[evt.currentTarget.dataset.index]); // отрисовываем мы dialog окна НЕ массива offers, а массива отфильрованных данных. 
     deactivateLastPin();
     evt.currentTarget.classList.add('pin--active');
   }
@@ -22,22 +25,19 @@ window.map = (function (card, pin, backend, msg) {
 
   function onPinEnterPress(evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      card.showCard(offers[evt.currentTarget.dataset.index]);
+      card.showCard(renderableOffers[evt.currentTarget.dataset.index]);
       deactivateLastPin();
       evt.currentTarget.classList.add('pin--active');
     }
   }
 
-  var offers = [];
-
-  var successHandler = function (data) {
+  function render(data) { // отрисовывем пины
+    renderableOffers = data; // для какого массива мы отрисовываем пины, для этого же массива мы и рисуем диалоги
     var fragment = document.createDocumentFragment();
-    offers = data;
     data.forEach(function (elem, idx) {
       fragment.appendChild(pin.renderPin(elem, idx));
     });
     nearbyAdsList.appendChild(fragment);
-
     var pins = nearbyAdsList.querySelectorAll('.pin');
     pins.forEach(function (elem) {
       if (!elem.classList.contains('pin__main')) {
@@ -45,10 +45,15 @@ window.map = (function (card, pin, backend, msg) {
         elem.addEventListener('keydown', onPinEnterPress);
       }
     });
+  }
+
+  var successHandler = function (data) {
+    var randomElements = util.getRandomFromArr(data, START_AMOUNT_OF_ELEMENTS);
+    render(randomElements);
   };
 
-
   backend.load(successHandler, msg.show);
+
   // Задание 16
 
   var USER_ICON_OFFSETS = {
@@ -117,9 +122,9 @@ window.map = (function (card, pin, backend, msg) {
     document.addEventListener('mouseup', onMouseUp);
   });
 
-
   return {
-    deactivateLastPin: deactivateLastPin,
+    render: render,
+    deactivateLastPin: deactivateLastPin
   };
 
-})(window.card, window.pin, window.backend, window.msg);
+})(window.pin, window.backend, window.msg, window.card, window.util);
