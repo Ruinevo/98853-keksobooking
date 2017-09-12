@@ -24,6 +24,7 @@ window.pin = (function () {
     return adsElement;
   }
 
+
   return {
     renderPin: renderPin
   };
