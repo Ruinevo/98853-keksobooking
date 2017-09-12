@@ -1,7 +1,6 @@
 'use strict';
 
-window.card = (function (map) {
-  var ESC_KEYCODE = 27;
+window.card = (function () {
   var ENTER_KEYCODE = 13;
   var offerDialog = document.querySelector('.dialog');
   var closeDialogBtn = offerDialog.querySelector('.dialog__close');
@@ -25,17 +24,8 @@ window.card = (function (map) {
     return humanType;
   }
 
-  // закрытие при нажатии на ESC
-  function onDialogEscPress(evt) {
-    if (evt.keyCode === ESC_KEYCODE) {
-      hideCard();
-    }
-  }
-
   function hideCard() {
-    map.deactivateLastPin();
     offerDialog.classList.add('hidden');
-    document.removeEventListener('keydown', onDialogEscPress);
   }
 
   // закрытие при нажатии на крестик
@@ -67,11 +57,12 @@ window.card = (function (map) {
 
   return {
 
-    showCard: function showCard(data) {
+    show: function showCard(data) {
       offerDialog.classList.remove('hidden');
       renderOffer(data);
-      document.addEventListener('keydown', onDialogEscPress);
-    }
+    },
+
+    hide: hideCard
 
   };
-})(window.map);
+})();
