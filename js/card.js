@@ -33,7 +33,7 @@ window.card = (function () {
   }
 
   function hideCard() {
-    window.map.deactivateLastPin();
+    map.deactivateLastPin();
     offerDialog.classList.add('hidden');
     document.removeEventListener('keydown', onDialogEscPress);
   }

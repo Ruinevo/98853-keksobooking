@@ -1,9 +1,10 @@
 'use strict';
 
-window.map = (function (pin, backend, msg, card) {
+window.map = (function (pin, backend, msg, card, util) {
 
   var nearbyAdsList = document.querySelector('.tokyo__pin-map');
   var ENTER_KEYCODE = 13;
+  var START_AMOUNT_OF_ELEMENTS = 3;
   var renderableOffers = [];
 
   function deactivateLastPin() {
@@ -47,7 +48,8 @@ window.map = (function (pin, backend, msg, card) {
   }
 
   var successHandler = function (data) {
-    render(data);
+    var randomElements = util.getRandomFromArr(data, START_AMOUNT_OF_ELEMENTS);
+    render(randomElements);
   };
 
   backend.load(successHandler, msg.show);
@@ -121,7 +123,8 @@ window.map = (function (pin, backend, msg, card) {
   });
 
   return {
-    render: render
+    render: render,
+    deactivateLastPin: deactivateLastPin
   };
 
-})(window.pin, window.backend, window.msg, window.card);
+})(window.pin, window.backend, window.msg, window.card, window.util);

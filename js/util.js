@@ -13,8 +13,22 @@ window.util = (function () {
     };
   };
 
-  return {
-    debounce: debounce
+  var getRandomElementsFromArr = function (data, count) {
+    var result = [];
+    var copy = data.slice();
+
+    for (var i = 0; i < count; i++) {
+      var randomIdx = Math.floor(Math.random() * copy.length);
+      result.push(copy[randomIdx]);
+      copy.splice(randomIdx, 1);
+    }
+    return result;
   };
+
+  return {
+    debounce: debounce,
+    getRandomFromArr: getRandomElementsFromArr
+  };
+
 })();
 

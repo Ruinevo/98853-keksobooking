@@ -81,6 +81,7 @@ window.search = (function (map, backend, util, msg) {
   };
 
   var filters = document.querySelectorAll('.tokyo__filter');
+
   filters.forEach(function (elem) {
     elem.addEventListener('change', util.debounce(updatePins));
   });
