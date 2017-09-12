@@ -70,9 +70,13 @@ window.search = (function (map, backend, util, msg) {
     });
   };
 
-  var updatePins = function () { // функция отрисовывает профильтрованные пины
+  var filteringFucntions = [filterOffersByType, filterOffersByRoomsCount, filterOffersByPrice, filterOffersByGuestsCount, filterOffersByFeatures];
+
+  var updatePins = function () { // функция фильтрует offers и отправляет на отрисовку
     removePins();
-    var filteredData = offers.filter(filterOffersByType).filter(filterOffersByPrice).filter(filterOffersByRoomsCount).filter(filterOffersByGuestsCount).filter(filterOffersByFeatures);
+    var filteredData = filteringFucntions.reduce(function (initial, elem) {
+      return initial.filter(elem);
+    }, offers);
     map.render(filteredData);
   };
 
