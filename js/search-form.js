@@ -13,7 +13,7 @@ window.search = (function (map, backend, util, msg) {
 
   function removePins() { // функция, для удаления всех пинов с карты (кроме main pin)
     var pins = nearbyAdsList.querySelectorAll('.pin');
-    pins.forEach(function (elem) {
+    util.forEach(pins, function (elem) {
       if (!elem.classList.contains('pin__main')) {
         elem.remove();
       }
@@ -82,11 +82,11 @@ window.search = (function (map, backend, util, msg) {
 
   var filters = document.querySelectorAll('.tokyo__filter');
 
-  filters.forEach(function (elem) {
+  util.forEach(filters, function (elem) {
     elem.addEventListener('change', util.debounce(updatePins));
   });
 
-  housingFeatures.forEach(function (elem) {
+  util.forEach(housingFeatures, function (elem) {
     elem.addEventListener('change', util.debounce(updatePins));
   });
 

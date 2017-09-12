@@ -25,9 +25,14 @@ window.util = (function () {
     return result;
   };
 
+  var forEach = function (arr, func) {
+    Array.prototype.forEach.call(arr, func);
+  };
+
   return {
     debounce: debounce,
-    getRandomFromArr: getRandomElementsFromArr
+    getRandomFromArr: getRandomElementsFromArr,
+    forEach: forEach
   };
 
 })();

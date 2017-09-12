@@ -4,30 +4,42 @@ window.map = (function (pin, backend, msg, card, util) {
 
   var nearbyAdsList = document.querySelector('.tokyo__pin-map');
   var ENTER_KEYCODE = 13;
+  var ESC_KEYCODE = 27;
   var START_AMOUNT_OF_ELEMENTS = 3;
   var renderableOffers = [];
 
   function deactivateLastPin() {
     var pins = nearbyAdsList.querySelectorAll('.pin');
-    pins.forEach(function (elem) {
+    util.forEach(pins, function (elem) {
       if (elem.classList.contains('pin--active')) {
         elem.classList.remove('pin--active');
       }
     });
   }
 
+  // закрытие при нажатии на ESC
+  function onDialogEscPress(evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+      deactivateLastPin();
+      card.hide();
+      document.removeEventListener('keydown', onDialogEscPress);
+    }
+  }
+
   function onPinClick(evt) {
-    card.showCard(renderableOffers[evt.currentTarget.dataset.index]); // отрисовываем мы dialog окна НЕ массива offers, а массива отфильрованных данных. 
+    card.show(renderableOffers[evt.currentTarget.dataset.index]); // отрисовываем мы dialog окна НЕ массива offers, а массива отфильрованных данных. 
     deactivateLastPin();
     evt.currentTarget.classList.add('pin--active');
+    document.addEventListener('keydown', onDialogEscPress);
   }
 
 
   function onPinEnterPress(evt) {
     if (evt.keyCode === ENTER_KEYCODE) {
-      card.showCard(renderableOffers[evt.currentTarget.dataset.index]);
+      card.show(renderableOffers[evt.currentTarget.dataset.index]);
       deactivateLastPin();
       evt.currentTarget.classList.add('pin--active');
+      document.addEventListener('keydown', onDialogEscPress);
     }
   }
 
@@ -39,7 +51,7 @@ window.map = (function (pin, backend, msg, card, util) {
     });
     nearbyAdsList.appendChild(fragment);
     var pins = nearbyAdsList.querySelectorAll('.pin');
-    pins.forEach(function (elem) {
+    util.forEach(pins, function (elem) {
       if (!elem.classList.contains('pin__main')) {
         elem.addEventListener('click', onPinClick);
         elem.addEventListener('keydown', onPinEnterPress);
