@@ -27,7 +27,7 @@ window.map = (function (pin, backend, msg, card, util) {
   }
 
   function onPinClick(evt) {
-    card.show(renderableOffers[evt.currentTarget.dataset.index]); // отрисовываем мы dialog окна НЕ массива offers, а массива отфильрованных данных. 
+    card.show(renderableOffers[evt.currentTarget.dataset.index]); // отрисовываем мы dialog окна НЕ массива offers, а массива отфильрованных данных.
     deactivateLastPin();
     evt.currentTarget.classList.add('pin--active');
     document.addEventListener('keydown', onDialogEscPress);
